@@ -1,0 +1,5 @@
+node_modules/
+.cache/
+public
+NOTES.md
+.DS_Store
