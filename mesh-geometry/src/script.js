@@ -15,7 +15,7 @@ const planeParameters = {
 const scene = new THREE.Scene();
 
 // add objects to the scene
-let geometry = new THREE.PlaneGeometry(1, 1);
+let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
 
 // const geometry = new THREE.BoxGeometry(1, 1, 1);
 // const geometry = new THREE.SphereGeometry(1, 32, 32);
@@ -50,17 +50,6 @@ let geometry = new THREE.PlaneGeometry(1, 1);
 //   label: "Scale Y",
 // });
 
-pane
-  .addBinding(planeParameters, "width", {
-    min: 0,
-    max: 10,
-    step: 0.1,
-    label: "width",
-  })
-  .on("change", (value) => {
-    geometry = new THREE.BoxGeometry(value, planeParameters.height);
-    cubeMesh.geometry = geometry;
-  });
 
 const cubeMaterial = new THREE.MeshBasicMaterial({
   color: "violet",
@@ -68,6 +57,31 @@ const cubeMaterial = new THREE.MeshBasicMaterial({
 });
 const cubeMesh = new THREE.Mesh(geometry, cubeMaterial);
 scene.add(cubeMesh);
+
+pane
+  .addBinding(planeParameters, "width", {
+    min: 0,
+    max: 10,
+    step: 0.1,
+    label: "width",
+  })
+  .on("change", () => {
+    geometry = new THREE.PlaneGeometry(planeParameters.width, planeParameters.height);
+    cubeMesh.geometry = geometry;
+  });
+    // either use the event.value or planeParameters directly as we are modifying it
+    
+pane
+  .addBinding(planeParameters, "height", {
+    min: 0,
+    max: 10,
+    step: 0.1,
+    label: "height",
+  })
+  .on("change", (e) => {
+    geometry = new THREE.PlaneGeometry(planeParameters.width, e.value);
+    cubeMesh.geometry = geometry;
+  });
 
 // initialize the camera
 const camera = new THREE.PerspectiveCamera(
@@ -77,6 +91,15 @@ const camera = new THREE.PerspectiveCamera(
   200
 );
 camera.position.z = 5;
+
+pane
+  .addFolder({ title: "Camera" })
+  .addBinding(camera.position, "z", {
+  min: 0,
+  max: 150,
+  step: 1,
+  label: "Camera Z",
+});
 
 // initialize the renderer
 const canvas = document.querySelector("canvas.threejs");
