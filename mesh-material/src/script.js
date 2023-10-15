@@ -10,28 +10,56 @@ const scene = new THREE.Scene();
 
 // initialize the geometry
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const planeGeometry = new THREE.PlaneGeometry(1, 1); 
+const planeGeometry = new THREE.PlaneGeometry(1, 1);
 
-const torusGeometry = new THREE.TorusKnotGeometry(0.5, 0.15, 100, 16)
+const torusGeometry = new THREE.TorusKnotGeometry(0.5, 0.15, 1000, 16);
 
 // initialize the material
 // const material = new THREE.MeshLambertMaterial();
-const material = new THREE.MeshPhongMaterial();
-material.shininess = 40;
+// const material = new THREE.MeshPhongMaterial();
+// material.shininess = 40;
+// material.color.set("red");
+
+// pane.addBinding(material, "shininess", {
+//   min: 0,
+//   max: 100,
+//   step: 1,
+//   label: "Shininess",
+// });
+
+const material = new THREE.MeshPhysicalMaterial();
 material.color.set("red");
 
-pane.addBinding(material, "shininess", {
+pane.addBinding(material, "metalness", {
   min: 0,
-  max: 100,
-  step: 1,
-  label: "Shininess",
+  max: 1,
+  step: 0.01,
+  label: "Metalness",
 });
+pane.addBinding(material, "roughness", {
+  min: 0,
+  max: 1,
+  step: 0.01,
+  label: "Roughness",
+});
+pane.addBinding(material, "clearcoat", {
+  min: 0,
+  max: 1,
+  step: 0.01,
+  label: "Clearcoat",
+});
+pane.addBinding(material, "reflectivity", {
+  min: 0,
+  max: 1,
+  step: 0.01,
+  label: "Reflectivity",
+});
+
 
 // material.color.set("violet"); // or new THREE.Color("violet")
 // material.transparent = true;
 // material.opacity = 1/3;
 material.side = THREE.DoubleSide; // ThreeJS constant, log to 2
-
 
 // initialize the mesh
 const mesh = new THREE.Mesh(geometry, material);
@@ -50,13 +78,12 @@ scene.add(torus);
 // scene.background = new THREE.Color("white");
 
 // initialize the light
-const light = new THREE.AmbientLight("white", 0.3);
+const light = new THREE.AmbientLight("white", 0.4);
 scene.add(light);
 
-const pointLight = new THREE.PointLight("white", 0.5);
+const pointLight = new THREE.PointLight("white", 1);
 pointLight.position.set(5, 5, 5);
 scene.add(pointLight);
-
 
 // initialize the camera
 const camera = new THREE.PerspectiveCamera(
