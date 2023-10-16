@@ -16,13 +16,39 @@ const textureLoader = new THREE.TextureLoader();
 
 // initialize the geometry
 const geometry = new THREE.BoxGeometry(1, 1, 1);
+const uv2 = new THREE.BufferAttribute(geometry.attributes.uv.array, 2);
+geometry.setAttribute("uv2", uv2);
+
 const torusKnotGeometry = new THREE.TorusKnotGeometry(0.5, 0.15, 100, 16);
+const uv2Knot = new THREE.BufferAttribute(
+  torusKnotGeometry.attributes.uv.array,
+  2
+);
+torusKnotGeometry.setAttribute("uv2", uv2Knot);
+
 const planeGeometry = new THREE.PlaneGeometry(1, 1);
+const uv2Plane = new THREE.BufferAttribute(
+  planeGeometry.attributes.uv.array,
+  2
+);
+planeGeometry.setAttribute("uv2", uv2Plane);
+
 const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+const uv2Sphere = new THREE.BufferAttribute(
+  sphereGeometry.attributes.uv.array,
+  2
+);
+sphereGeometry.setAttribute("uv2", uv2Sphere);
+
 const cylinderGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
+const uv2Cylinder = new THREE.BufferAttribute(
+  cylinderGeometry.attributes.uv.array,
+  2
+);
+cylinderGeometry.setAttribute("uv2", uv2Cylinder);
 
 // initialize the texture
-  /** // grasstexture on plane, repeat, offset
+/** // grasstexture on plane, repeat, offset
 const grassTexture = textureLoader.load(
   "/textures/space-cruiser-panels2-bl/space-cruiser-panels2_albedo.png"
 );
@@ -47,13 +73,35 @@ pane.addBinding(grassTexture, "offset", {
 });
 */
 
-const texture = textureLoader.load("/textures/uvMappingTest.jpg")
+const grassAlbedo = textureLoader.load("/textures/whispy-grass-meadow-bl/wispy-grass-meadow_albedo.png");
+const grassAo = textureLoader.load("/textures/whispy-grass-meadow-bl/wispy-grass-meadow_ao.png");
+const grassHeight = textureLoader.load("/textures/whispy-grass-meadow-bl/wispy-grass-meadow_height.png");
+const grassMetallic = textureLoader.load("/textures/whispy-grass-meadow-bl/wispy-grass-meadow_metallic.png");
+const grassNormal = textureLoader.load("/textures/whispy-grass-meadow-bl/wispy-grass-meadow_normal-ogl.png");
+const grassRoughness = textureLoader.load("/textures/whispy-grass-meadow-bl/wispy-grass-meadow_roughness.png");
 
 // initialize the material
 
 const material = new THREE.MeshPhysicalMaterial();
 material.side = THREE.DoubleSide;
-material.map = texture;
+material.map = grassAlbedo;
+
+material.roughnessMap = grassRoughness;
+material.metalnessMap = grassMetallic;
+
+material.normalMap = grassNormal;
+
+material.displacementMap = grassHeight;
+material.displacementScale = 0.1;
+
+//ambiant occlusion (= blocked light)
+material.aoMap = grassAo;
+
+pane.addBinding(material, "aoMapIntensity", {
+  min: 0,
+  max: 1,
+  step: 0.01,
+});
 
 // initialize the mesh
 const cube = new THREE.Mesh(geometry, material);
@@ -94,7 +142,7 @@ scene.add(pointLight);
 const camera = new THREE.PerspectiveCamera(
   35,
   window.innerWidth / window.innerHeight,
-  1,
+  0.1,
   20000
 );
 camera.position.z = 10;
@@ -126,11 +174,11 @@ const renderloop = () => {
   // group.rotation.y += 0.01;
   /** this rotates whole group on 1 y axis (fix camera)  */
 
-  group.children.forEach((child) => {
-    if (child instanceof THREE.Mesh) {
-      child.rotation.y += 0.01;
-    }
-  });
+  // group.children.forEach((child) => {
+  //   if (child instanceof THREE.Mesh) {
+  //     child.rotation.y += 0.01;
+  //   }
+  // });
   /**  this rotates each mesh in the group on its y axis */
 
   controls.update();
