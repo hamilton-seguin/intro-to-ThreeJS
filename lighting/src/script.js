@@ -17,7 +17,7 @@ const circleGeometry = new THREE.CircleGeometry(0.5, 32);
 
 const material = new THREE.MeshStandardMaterial({
   color: 0xffffff,
-  metalness: 0.0,
+  metalness: 0.2,
   roughness: 0.5,
 });
 
@@ -49,9 +49,11 @@ circle.rotation.x = -Math.PI / 2;
 
 scene.add(box, sphere, torusKnot, circle);
 scene.add(box2, sphere2, torusKnot2);
+console.log(scene);
 
 // initialize the light
-
+const light = new THREE.AmbientLight(0xffffff, 0.6);
+scene.add(light);
 
 // initialize the camera
 const camera = new THREE.PerspectiveCamera(
