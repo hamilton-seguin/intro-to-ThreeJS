@@ -57,7 +57,7 @@ const pointLight = new THREE.PointLight(0x00ff00, 0.64);
 const spotLight = new THREE.SpotLight(0xff0000, 1.30);
 const rectAreaLight = new THREE.RectAreaLight(0x0000ff, 0, 50, 2);
 
-/** Natural looking value for pointLight and spotLight decay is 2 (don't touch for more realistic light)  */
+  /** Natural looking value for pointLight and spotLight DECAY is 2 (don't touch for more realistic light)  */
 
 scene.add(
   ambientLight,
@@ -76,59 +76,38 @@ spotLight.distance = 20;
 spotLight.target.position.set(-2, -1, -1);
 spotLight.penumbra = 0.5;
 spotLight.angle = Math.PI *0.1;
-scene.add(spotLight.target); // need to add target to scene so its updated each frame
-
-
 rectAreaLight.position.set(0, 2, -1);
 rectAreaLight.lookAt(0, 0, -1); // HAS to be after the position is set
 rectAreaLight.castShadow = false;
 
+scene.add(spotLight.target); // need to add spotLight.target to scene so its updated each frame
+
+// add light helpers
 const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 0.5);
-scene.add(directionalLightHelper);
-
 const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.5);
-scene.add(pointLightHelper);
-
 const spotLightHelper = new THREE.SpotLightHelper(spotLight);
-
-
 const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight);
-scene.add(rectAreaLightHelper);
 
+scene.add(directionalLightHelper, pointLightHelper, spotLightHelper, rectAreaLightHelper);
+
+// tweakpane GUI
 const ambient = pane.addFolder({ title: "Ambient Light", expanded: false });
 ambient.addBinding(ambientLight, "intensity", { min: 0, max: 1, step: 0.01 });
 ambient.addBinding(ambientLight, "color", { color: { type: "float" } });
 
-//hemisphere light is cheap (not intensive in terms of performance)
-const hemisphere = pane.addFolder({
-  title: "Hemisphere Light",
-  expanded: false,
-});
-hemisphere.addBinding(hemisphereLight, "intensity", {
-  min: 0,
-  max: 1,
-  step: 0.01,
-});
+  /** hemisphere light is cheap (not intensive in terms of performance) */
+const hemisphere = pane.addFolder({title: "Hemisphere Light",expanded: false});
+hemisphere.addBinding(hemisphereLight, "intensity", {min: 0, max: 1, step: 0.01});
 hemisphere.addBinding(hemisphereLight, "color", { color: { type: "float" } });
-hemisphere.addBinding(hemisphereLight, "groundColor", {
-  color: { type: "float" },
-});
-console.log(hemisphereLight);
+hemisphere.addBinding(hemisphereLight, "groundColor", {color: { type: "float" }});
 
-const directional = pane.addFolder({
-  title: "Directional Light",
-  expanded: true,
-});
+const directional = pane.addFolder({title: "Directional Light", expanded: true});
 directional.addBinding(directionalLight, "position", {
   x: { min: -10, max: 10, step: 0.1 },
   y: { min: -10, max: 10, step: 0.1 },
   z: { min: -10, max: 10, step: 0.1 },
 });
-directional.addBinding(directionalLight, "intensity", {
-  min: 0,
-  max: 1,
-  step: 0.01,
-});
+directional.addBinding(directionalLight, "intensity", {min: 0, max: 1, step: 0.01});
 directional.addBinding(directionalLight, "color", { color: { type: "float" } });
 
 const pointL = pane.addFolder({ title: "Point Light", expanded: true });
@@ -137,7 +116,7 @@ pointL.addBinding(pointLight, "position", {
   y: { min: -10, max: 10, step: 0.1 },
   z: { min: -10, max: 10, step: 0.1 },
 });
-pointL.addBinding(pointLight, "distance", { min: 0, max: 100, step: 0.1 }); //distance is the maximum sphere of influence
+pointL.addBinding(pointLight, "distance", { min: 0, max: 100, step: 0.1 }); 
 pointL.addBinding(pointLight, "intensity", { min: 0, max: 1, step: 0.01 });
 pointL.addBinding(pointLight, "color", { color: { type: "float" } });
 
@@ -159,7 +138,6 @@ spotL.addBinding(spotLight.target, "position", {
   z: { min: -10, max: 10, step: 0.1 },
   label: "target",
 });
-scene.add(spotLightHelper);
 
 const rectL = pane.addFolder({ title: "Rectangular Area Light", expanded: false });
 rectL.addBinding(rectAreaLight, "position", {
@@ -176,20 +154,11 @@ rectL.addBinding(rectAreaLight, "rotation", {
   y: { min: -Math.PI, max: Math.PI, step: 0.01 },
   z: { min: -Math.PI, max: Math.PI, step: 0.1 },
 });
-// rectL.addBinding(rectAreaLight, "lookAt", {
-//   x: { min: -10, max: 10, step: 0.1 },
-//   y: { min: -10, max: 10, step: 0.1 },
-//   z: { min: -10, max: 10, step: 0.1 },
-// });
-console.log(rectAreaLight);
+  /** distance is the maximum sphere of influence */
+
 
 // initialize the camera
-const camera = new THREE.PerspectiveCamera(
-  35,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  10000
-);
+const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 10000);
 camera.position.set(20, 45, 30)
 
 
