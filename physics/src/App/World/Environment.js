@@ -23,14 +23,20 @@ export default class Environment {
     this.scene.add(this.directionalLight);
   }
   addMeshes() {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const group = new THREE.Group();
+    group.position.y = 5;
+    group.rotation.x = 0.5;
+    this.scene.add(group);
+
+    const geometry = new THREE.BoxGeometry(5, 4, 3);
     const material = new THREE.MeshStandardMaterial({ color: "blue" });
+
     this.cubeMesh = new THREE.Mesh(geometry, material);
     this.cubeMesh.position.y = 10;
     this.cubeMesh.position.x = 3;
     this.cubeMesh.rotation.x = 0.5;
     this.cubeMesh.rotation.z = 0.5;
-    this.scene.add(this.cubeMesh);
+    group.add(this.cubeMesh);
     this.physics.add(this.cubeMesh);
 
     this.cubeMesh2 = new THREE.Mesh(geometry, material);
@@ -38,7 +44,7 @@ export default class Environment {
     this.cubeMesh2.position.x = 4;
     this.cubeMesh2.rotation.x = 0.5;
     this.cubeMesh2.rotation.z = 0.5;
-    this.scene.add(this.cubeMesh2);
+    group.add(this.cubeMesh2);
     this.physics.add(this.cubeMesh2);
   }
 }
