@@ -23,30 +23,46 @@ export default class Physics {
     });
   }
 
-  add(mesh, type) {
+  add(mesh, type, collider) {
+
+    // Define the rigid body
     let rigidBodyType;
     if (type === "dynamic") {
       rigidBodyType = this.rapier.RigidBodyDesc.dynamic();
     } else if (type === "fixed") {
       rigidBodyType = this.rapier.RigidBodyDesc.fixed();
     }
-
     this.rigidBody = this.world.createRigidBody(rigidBodyType);
 
+    let colliderType;
+    switch (collider) {
+        case "cuboid":
+            const dimensions = this.computeCuboidDimensions(mesh);
+            colliderType = this.rapier.ColliderDesc.cuboid(
+              dimensions.x / 2,
+              dimensions.y / 2,
+              dimensions.z / 2
+            );
+            this.world.createCollider(colliderType, this.rigidBody);
+            break;
+        case "ball":
+            const radius = this.computeBallDimensions(mesh);
+            colliderType = this.rapier.ColliderDesc.ball(radius);
+            this.world.createCollider(colliderType, this.rigidBody);
+            break;
+        case "trimesh":
+            this.addTrimesh(mesh);
+            break;
+    }
+
+    // Define the collider type
+
+
+    // Set the rigidBody position and rotation
     const worldPosition = mesh.getWorldPosition(new THREE.Vector3());
     const worldRotation = mesh.getWorldQuaternion(new THREE.Quaternion());
     this.rigidBody.setTranslation(worldPosition);
     this.rigidBody.setRotation(worldRotation);
-
-    const dimensions = this.computeCuboidDimensions(mesh);
-
-    const colliderType = this.rapier.ColliderDesc.cuboid(
-      dimensions.x / 2,
-      dimensions.y / 2,
-      dimensions.z / 2
-    );
-    this.world.createCollider(colliderType, this.rigidBody);
-
     this.meshMap.set(mesh, this.rigidBody);
   }
 
@@ -57,6 +73,15 @@ export default class Physics {
     const worldScale = mesh.getWorldScale(new THREE.Vector3());
     size.multiply(worldScale);
     return size;
+  }
+
+  computeBallDimensions(mesh) {
+    // auto compute collider dimensions
+    mesh.geometry.computeBoundingSphere();
+    const radius = mesh.geometry.boundingSphere.radius;
+    const worldScale = mesh.getWorldScale(new THREE.Vector3());
+    const maxScale = Math.max(worldScale.x, worldScale.y, worldScale.z);
+    return radius * maxScale;
   }
 
   loop() {
