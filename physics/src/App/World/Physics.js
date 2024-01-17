@@ -24,8 +24,7 @@ export default class Physics {
   }
 
   add(mesh, type, collider) {
-
-    // Define the rigid body
+    // Define the rigid body type
     let rigidBodyType;
     if (type === "dynamic") {
       rigidBodyType = this.rapier.RigidBodyDesc.dynamic();
@@ -34,29 +33,29 @@ export default class Physics {
     }
     this.rigidBody = this.world.createRigidBody(rigidBodyType);
 
+    // Define the collider type
     let colliderType;
     switch (collider) {
-        case "cuboid":
-            const dimensions = this.computeCuboidDimensions(mesh);
-            colliderType = this.rapier.ColliderDesc.cuboid(
-              dimensions.x / 2,
-              dimensions.y / 2,
-              dimensions.z / 2
-            );
-            this.world.createCollider(colliderType, this.rigidBody);
-            break;
-        case "ball":
-            const radius = this.computeBallDimensions(mesh);
-            colliderType = this.rapier.ColliderDesc.ball(radius);
-            this.world.createCollider(colliderType, this.rigidBody);
-            break;
-        case "trimesh":
-            this.addTrimesh(mesh);
-            break;
+      case "cuboid":
+        const dimensions = this.computeCuboidDimensions(mesh);
+        colliderType = this.rapier.ColliderDesc.cuboid(
+          dimensions.x / 2,
+          dimensions.y / 2,
+          dimensions.z / 2
+        );
+        this.world.createCollider(colliderType, this.rigidBody);
+        break;
+      case "ball":
+        const radius = this.computeBallDimensions(mesh);
+        colliderType = this.rapier.ColliderDesc.ball(radius);
+        this.world.createCollider(colliderType, this.rigidBody);
+        break;
+      case "trimesh":
+        const { vertices, indices } = this.computeTrimeshDimensions(mesh);
+        colliderType = this.rapier.ColliderDesc.trimesh(vertices, indices);
+        this.world.createCollider(colliderType, this.rigidBody);
+        break;
     }
-
-    // Define the collider type
-
 
     // Set the rigidBody position and rotation
     const worldPosition = mesh.getWorldPosition(new THREE.Vector3());
@@ -82,6 +81,16 @@ export default class Physics {
     const worldScale = mesh.getWorldScale(new THREE.Vector3());
     const maxScale = Math.max(worldScale.x, worldScale.y, worldScale.z);
     return radius * maxScale;
+  }
+
+  computeTrimeshDimensions(mesh) {
+    const vertices = mesh.geometry.attributes.position.array;
+    const indices = mesh.geometry.index.array;
+    const worldScale = mesh.getWorldScale(new THREE.Vector3());
+    const scaledVertices = vertices.map((vertex, i) => {
+        return vertex * worldScale.getComponent(i % 3);
+    })
+    return { scaledVertices, indices };
   }
 
   loop() {
