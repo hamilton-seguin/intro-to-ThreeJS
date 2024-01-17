@@ -16,26 +16,21 @@ export default class Physics {
 
       // create my object and mesh - Threejs
 
-      const groundGeometry = new THREE.BoxGeometry(20, 1, 20);
-      const groundMaterial = new THREE.MeshStandardMaterial({
-        color: "turquoise",
-      });
-      this.groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-      this.scene.add(this.groundMesh);
-
       // create my rigid body - Rapier
-      const groundRigidBodyType = RAPIER.RigidBodyDesc.fixed();
-      this.groundRigidBody = this.world.createRigidBody(groundRigidBodyType);
-      const groundColliderType = RAPIER.ColliderDesc.cuboid(10, 0.5, 10);
-      this.world.createCollider(groundColliderType, this.groundRigidBody);
 
       this.rapierLoaded = true;
       appStateStore.setState({ physicsReady: true });
     });
   }
 
-  add(mesh) {
-    const rigidBodyType = this.rapier.RigidBodyDesc.dynamic();
+  add(mesh, type) {
+    let rigidBodyType;
+    if (type === "dynamic") {
+      rigidBodyType = this.rapier.RigidBodyDesc.dynamic();
+    } else if (type === "fixed") {
+      rigidBodyType = this.rapier.RigidBodyDesc.fixed();
+    }
+
     this.rigidBody = this.world.createRigidBody(rigidBodyType);
 
     const worldPosition = mesh.getWorldPosition(new THREE.Vector3());
