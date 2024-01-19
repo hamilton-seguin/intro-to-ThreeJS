@@ -19,8 +19,8 @@ export default class Character {
   }
 
   instantiateCharacter() {
-    // const geometry = new THREE.BoxGeometry(2.5, 2.5, 2.5);
-    const geometry = new THREE.SphereGeometry(1,32,32);
+    const geometry = new THREE.BoxGeometry(2.5, 2.5, 2.5);
+    // const geometry = new THREE.SphereGeometry(1,32,32);
     const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     this.character = new THREE.Mesh(geometry, material);
     this.character.position.set(0, 2.5, 0);
@@ -28,7 +28,7 @@ export default class Character {
     this.characterRigidBody = this.physics.add(
       this.character,
       "kinematic",
-      "ball"
+      "cuboid"
     );
   }
 
