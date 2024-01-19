@@ -10,8 +10,8 @@ export default class Environment {
 
     this.loadEnvironment();
     this.addGround();
-    // this.addWalls();
-    // this.addStairs();
+    this.addWalls();
+    this.addStairs();
     this.addMeshes();
   }
 
@@ -39,9 +39,7 @@ export default class Environment {
     const wallMaterial = new THREE.MeshStandardMaterial({
       color: "lightgreen",
     });
-
     const wallGeometry = new THREE.BoxGeometry(100, 10, 1);
-
     const wallPositions = [
       { x: 0, y: 5, z: 50 },
       { x: 0, y: 5, z: -50 },
@@ -67,9 +65,7 @@ export default class Environment {
     const stairMaterial = new THREE.MeshStandardMaterial({
       color: "orange",
     });
-
     const stairGeometry = new THREE.BoxGeometry(10, 1, 100);
-
     const stairPositions = [
       { x: 5, y: 1, z: 0 },
       { x: 15, y: 2, z: 0 },
@@ -89,7 +85,7 @@ export default class Environment {
   addMeshes() {
     const geometry = new THREE.SphereGeometry(1, 32, 32);
     const material = new THREE.MeshStandardMaterial({
-      color: "blue",
+      color: "red",
     });
 
     for (let i = 0; i < 100; i++) {
