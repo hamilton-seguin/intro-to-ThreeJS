@@ -24,8 +24,7 @@ export default class Character {
     // create a character in threejs
     const geometry = new THREE.BoxGeometry(2, 2, 2);
     const material = new THREE.MeshStandardMaterial({
-      color: 0x00ff00,
-      wireframe: true,
+      color: "magenta",
     });
     this.character = new THREE.Mesh(geometry, material);
     this.character.position.set(0, 2.5, 0);
@@ -50,18 +49,44 @@ export default class Character {
     );
     this.rigidBody.setTranslation(worldPosition);
     this.rigidBody.setRotation(worldRotation);
+
+    this.characterController =
+      this.physics.world.createCharacterController(0.01);
+    this.characterController.setApplyImpulsesToDynamicBodies(true);
+    // this.characterController.setJumpVelocity(new THREE.Vector3(0, 5, 0));
+    this.characterController.enableAutostep(3, 0.5, false);
+    this.characterController.enableSnapToGround(100); //-> doesn't seem to work (used custom gravity y -= 1)
+    // this.characterController.setMaxSlopeClimbAngle((45 * Math.PI) / 180);
+    // this.characterController.setMinSlopeSlideAngle((30 * Math.PI) / 180);
   }
 
-  loop() {
+  loop(deltaTime) {
+    const movement = new THREE.Vector3();
 
     if (this.forward) {
+      movement.z -= 1;
     }
     if (this.backward) {
+      movement.z += 1;
     }
     if (this.left) {
+      movement.x -= 1;
     }
     if (this.right) {
+      movement.x += 1;
     }
 
+    movement.normalize().multiplyScalar(deltaTime * 35);
+    // movement.y = -1
+
+    this.characterController.computeColliderMovement(this.collider, movement);
+    this.characterController.computedMovement();
+
+    const newPosition = new THREE.Vector3()
+      .copy(this.rigidBody.translation())
+      .add(this.characterController.computedMovement());
+
+    this.rigidBody.setNextKinematicTranslation(newPosition);
+    this.character.position.copy(this.rigidBody.translation());
   }
 }

@@ -12,6 +12,7 @@ export default class Environment {
     this.addGround();
     this.addWalls();
     this.addStairs();
+    this.addSlope();
     this.addMeshes();
   }
 
@@ -62,6 +63,23 @@ export default class Environment {
       this.physics.add(wallMesh, "fixed", "cuboid");
     });
   }
+
+  addSlope() {
+    const slopeGeometry = new THREE.BoxGeometry(50, 1, 15);
+    const slopeMaterial = new THREE.MeshStandardMaterial({
+      color: "brown",
+    });
+    this.slopeMesh = new THREE.Mesh(slopeGeometry, slopeMaterial);
+    
+    this.slopeMesh.rotation.z = 18 * (Math.PI / 180);
+    // this.slopeMesh.rotation.y = -35
+    
+    // Adjust the position of the slope as needed
+    this.slopeMesh.position.set(-3, 0, 0);
+    
+    this.scene.add(this.slopeMesh);
+    this.physics.add(this.slopeMesh, "fixed", "cuboid");
+}
 
   addStairs() {
     const stairMaterial = new THREE.MeshStandardMaterial({
