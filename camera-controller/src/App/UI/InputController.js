@@ -17,7 +17,7 @@ export default class InputController {
       case "ArrowUp":
         inputStore.setState({ forward: true });
         break;
-      case "KeyA":
+      case "KeyQ":
       case "ArrowLeft":
         inputStore.setState({ left: true });
         break;
@@ -25,7 +25,7 @@ export default class InputController {
       case "ArrowDown":
         inputStore.setState({ backward: true });
         break;
-      case "KeyD":
+      case "KeyE":
       case "ArrowRight":
         inputStore.setState({ right: true });
         break;
@@ -38,7 +38,7 @@ export default class InputController {
       case "ArrowUp":
         inputStore.setState({ forward: false });
         break;
-      case "KeyA":
+      case "KeyQ":
       case "ArrowLeft":
         inputStore.setState({ left: false });
         break;
@@ -46,7 +46,7 @@ export default class InputController {
       case "ArrowDown":
         inputStore.setState({ backward: false });
         break;
-      case "KeyD":
+      case "KeyE":
       case "ArrowRight":
         inputStore.setState({ right: false });
         break;

@@ -24,8 +24,7 @@ export default class Character {
     // create a character in threejs
     const geometry = new THREE.BoxGeometry(2, 2, 2);
     const material = new THREE.MeshStandardMaterial({
-      color: 0x00ff00,
-      wireframe: true,
+      color: "red",
     });
     this.character = new THREE.Mesh(geometry, material);
     this.character.position.set(0, 2.5, 0);
