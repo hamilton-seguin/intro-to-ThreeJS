@@ -56,8 +56,8 @@ export default class Camera {
       targetOffset.applyQuaternion(characterRotation);
       targetOffset.add(characterPosition);
 
-      // this.instance.position.lerp(cameraOffset, 0.05);
-      // this.controls.target.lerp(targetOffset, 0.05);
+      this.instance.position.lerp(cameraOffset, 0.05);
+      this.controls.target.lerp(targetOffset, 0.05);
     }
   }
 }

@@ -11,18 +11,20 @@ export default class Character {
     this.hAvatar = this.assetStore.loadedAssets.hAvatar;
 
     // create character and add to scene
-    const geometry = new THREE.BoxGeometry(2, 2, 2);
+    const geometry = new THREE.BoxGeometry(2, 5, 2);
     const material = new THREE.MeshStandardMaterial({
       color: 0x00ff00,
       wireframe: true,
+      visible: false,
     });
     this.instance = new THREE.Mesh(geometry, material);
-    this.instance.position.set(0, 2.5, 0);
+    this.instance.position.set(0, 4, 0);
     this.scene.add(this.instance);
 
     const hAvatar = this.hAvatar.scene;
-    hAvatar.scale.setScalar(3.5);
     hAvatar.rotation.y = Math.PI;
+    hAvatar.position.y = -2.5;
+    hAvatar.scale.setScalar(3.5);
     this.instance.add(hAvatar);
   }
 }

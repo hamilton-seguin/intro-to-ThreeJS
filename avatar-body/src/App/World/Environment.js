@@ -37,7 +37,7 @@ export default class Environment {
 
   addWalls() {
     const wallMaterial = new THREE.MeshStandardMaterial({
-      color: "#02e86a",
+      color: "#e85302",
     });
 
     const wallGeometry = new THREE.BoxGeometry(100, 10, 1);
@@ -65,7 +65,7 @@ export default class Environment {
 
   addStairs() {
     const stairMaterial = new THREE.MeshStandardMaterial({
-      color: "#ff6f08",
+      color: "#e80225",
     });
 
     const stairGeometry = new THREE.BoxGeometry(10, 1, 100);
