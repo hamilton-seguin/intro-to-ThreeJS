@@ -54,7 +54,8 @@ export default class CharacterController {
     this.rigidBody.setRotation(worldRotation);
 
     // Create character controller, set properties, and enable autostepping
-    this.characterController = this.physics.world.createCharacterController(0.01);
+    this.characterController =
+      this.physics.world.createCharacterController(0.01);
     this.characterController.setApplyImpulsesToDynamicBodies(true);
     this.characterController.enableAutostep(5, 0.1, false);
     this.characterController.enableSnapToGround(1);
@@ -63,7 +64,7 @@ export default class CharacterController {
   /**
    * Loop function that updates the character's position and movement.
    */
-  loop() {
+  loop(deltaTime) {
     // Initialize movement vector based on input values
     const movement = new THREE.Vector3();
     if (this.forward) {
@@ -80,7 +81,7 @@ export default class CharacterController {
     }
 
     // Normalize and scale movement vector and set y component to -1
-    movement.normalize().multiplyScalar(0.3);
+    movement.normalize().multiplyScalar(deltaTime * 25);
     movement.y = -1;
 
     // Update collider movement and get new position of rigid body
@@ -88,7 +89,7 @@ export default class CharacterController {
     const newPosition = new THREE.Vector3()
       .copy(this.rigidBody.translation())
       .add(this.characterController.computedMovement());
-    
+
     // Set next kinematic translation of rigid body and update character position
     this.rigidBody.setNextKinematicTranslation(newPosition);
     this.character.position.copy(this.rigidBody.translation());

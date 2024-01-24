@@ -16,11 +16,13 @@ export default class World {
     this.physics = new Physics();
 
     // create world classes
-    appStateStore.subscribe((state) => {
-      if (state.physicsReady) {
+    // unsub makes sure we only instantiate these classes once by calling the callback function (itself)
+    const unsub = appStateStore.subscribe((state) => {
+      if (state.physicsReady && state.assetsReady) {
         this.environment = new Environment();
         this.character = new Character();
         this.characterController = new CharacterController();
+        unsub();
       }
     });
 
@@ -29,6 +31,6 @@ export default class World {
 
   loop(deltaTime, elapsedTime) {
     this.physics.loop();
-    if(this.characterController) this.characterController.loop();
+    if(this.characterController) this.characterController.loop(deltaTime);
   }
 }

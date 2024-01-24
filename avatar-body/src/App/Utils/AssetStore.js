@@ -1,10 +1,17 @@
 import { createStore } from "zustand/vanilla";
 
-const assetsToLoad = [{
-  id: "h-avatar",
-  path: "/models/h-avatar.glb",
-  type: "model",
-}];
+const assetsToLoad = [
+  {
+    id: "hAvatar",
+    path: "/models/h-avatar.glb",
+    type: "model",
+  },
+  {
+    id: "mAvatar",
+    path: "/models/m-avatar.glb",
+    type: "model",
+  },
+];
 
 const assetStore = createStore((set) => ({
   assetsToLoad,
