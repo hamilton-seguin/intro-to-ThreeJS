@@ -3,11 +3,11 @@ import assetStore from "../Utils/AssetStore.js";
 
 import App from "../App.js";
 export default class Character {
-  constructor() {
+  constructor(avatarChosen) {
     this.app = new App();
     this.scene = this.app.scene;
     this.assetStore = assetStore.getState();
-    this.hAvatar = this.assetStore.loadedAssets.hAvatar;
+    this.avatar = this.assetStore.loadedAssets[avatarChosen];
 
     this.instantiateCharacter();
   }
@@ -25,7 +25,7 @@ export default class Character {
     this.scene.add(this.instance);
 
     // add avatar to character
-    const avatar = this.hAvatar.scene;
+    const avatar = this.avatar.scene;
     avatar.rotation.y = Math.PI;
     avatar.position.y = -2.5;
     avatar.scale.setScalar(3);

@@ -20,14 +20,17 @@ export default class World {
     const unsub = appStateStore.subscribe((state) => {
       if (state.physicsReady && state.assetsReady) {
         this.environment = new Environment();
-        this.character = new Character();
-        this.characterController = new CharacterController();
-        this.animationController = new AnimationController();
         unsub();
       }
     });
 
     this.loop();
+  }
+
+  setCharacter(avatar) {
+    this.character = new Character(avatar);
+    this.characterController = new CharacterController();
+    this.animationController = new AnimationController(this.character);
   }
 
   loop(deltaTime, elapsedTime) {
