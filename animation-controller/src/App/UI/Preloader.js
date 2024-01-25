@@ -36,15 +36,15 @@ export default class Preloader {
     this.startButton.classList.add("fadeIn");
 
     this.hAvatar.addEventListener("click", () => {
-        // appStateStore.setState({ avatarChosen: "hAvatar" });
         this.app.world.setCharacter("hAvatar");
         this.removeOverlay();
+        this.mAvatar.removeEventListener("click", () => {});
       }, { once: true }
     );
     this.mAvatar.addEventListener("click", () => {
-        // appStateStore.setState({ avatarChosen: "mAvatar" });
         this.app.world.setCharacter("mAvatar");
         this.removeOverlay();
+        this.hAvatar.removeEventListener("click", () => {});
       }, { once: true }
     );
   }
