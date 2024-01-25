@@ -14,26 +14,28 @@ export default class InputController {
 
   onKeyDown(event) {
     if (this.keyPressed[event.code]) return;
-      switch (event.code) {
-        case "KeyW":
-        case "ArrowUp":
-          inputStore.setState({ forward: true });
-          break;
-        case "KeyQ":
-        case "ArrowLeft":
-          inputStore.setState({ left: true });
-          break;
-        case "KeyS":
-        case "ArrowDown":
-          inputStore.setState({ backward: true });
-          break;
-        case "KeyE":
-        case "ArrowRight":
-          inputStore.setState({ right: true });
-          break;
-      }
-      this.keyPressed[event.code] = true;
-    
+    switch (event.code) {
+      case "KeyW":
+      case "ArrowUp":
+        inputStore.setState({ forward: true });
+        break;
+      case "KeyQ":
+      case "ArrowLeft":
+        inputStore.setState({ left: true });
+        break;
+      case "KeyS":
+      case "ArrowDown":
+        inputStore.setState({ backward: true });
+        break;
+      case "KeyE":
+      case "ArrowRight":
+        inputStore.setState({ right: true });
+        break;
+      case "KeyF":
+        inputStore.setState({ extra: true });
+        break;
+    }
+    this.keyPressed[event.code] = true;
   }
 
   onKeyUp(event) {
@@ -53,6 +55,9 @@ export default class InputController {
       case "KeyE":
       case "ArrowRight":
         inputStore.setState({ right: false });
+        break;
+      case "KeyF":
+        inputStore.setState({ extra: false });
         break;
     }
     this.keyPressed[event.code] = false;

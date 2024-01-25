@@ -34,10 +34,12 @@ export default class AnimationController {
     action.crossFadeFrom(this.currentAction, 0.2)
     this.currentAction = action;
   }
-  
+
   onInput(input) {
     if (input.forward || input.backward || input.left || input.right) {
       this.playAnimation("Running");
+    } else if (input.extra) {
+      this.animations.get("Dancing") ? this.playAnimation("Dancing") : this.playAnimation("Idle-Hand");
     } else {
       this.playAnimation("Idle");
     }
