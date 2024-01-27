@@ -35,18 +35,20 @@ export default class Preloader {
     this.startButton.style.display = "inline";
     this.startButton.classList.add("fadeIn");
 
-    this.hAvatar.addEventListener("click", () => {
-        this.app.world.setCharacter("hAvatar");
-        this.removeOverlay();
-        this.mAvatar.removeEventListener("click", () => {});
-      }, { once: true }
-    );
-    this.mAvatar.addEventListener("click", () => {
-        this.app.world.setCharacter("mAvatar");
-        this.removeOverlay();
-        this.hAvatar.removeEventListener("click", () => {});
-      }, { once: true }
-    );
+    const hAvatarClickHandler = () => {
+      this.app.world.setCharacter("hAvatar");
+      this.removeOverlay();
+      this.mAvatar.removeEventListener("click", mAvatarClickHandler);
+    };
+
+    const mAvatarClickHandler = () => {
+      this.hAvatar.removeEventListener("click", hAvatarClickHandler);
+      this.app.world.setCharacter("mAvatar");
+      this.removeOverlay();
+    };
+
+    this.hAvatar.addEventListener("click", hAvatarClickHandler, { once: true });
+    this.mAvatar.addEventListener("click", mAvatarClickHandler, { once: true });
   }
 
   removeOverlay() {

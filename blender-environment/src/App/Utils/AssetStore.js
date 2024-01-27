@@ -11,6 +11,11 @@ const assetsToLoad = [
     path: "/models/m-avatar.glb",
     type: "model",
   },
+  {
+    id: "environment",
+    path: "/models/environment.glb",
+    type: "model",
+  },
 ];
 
 

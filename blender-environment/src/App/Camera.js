@@ -9,6 +9,8 @@ export default class Camera {
     this.app = new App();
     this.canvas = this.app.canvas;
 
+    this.pane = this.app.gui.pane;
+
     this.sizesStore = sizesStore;
 
     this.sizes = this.sizesStore.getState();
@@ -25,8 +27,12 @@ export default class Camera {
       1,
       600
     );
-    this.instance.position.z = 100;
-    this.instance.position.y = 20;
+    this.instance.position.set(0, 25, 40);
+    this.instance.lookAt(0, 15, 0);
+
+    // pane controls
+    const cameraFolder = this.pane.addFolder({ title: "Camera" });
+    cameraFolder.addBinding(this.instance, "position", { min: 0, max: 180, step: 1 });
   }
 
   setControls() {
@@ -52,11 +58,11 @@ export default class Camera {
       cameraOffset.applyQuaternion(characterRotation);
       cameraOffset.add(characterPosition);
 
-      const targetOffset = new THREE.Vector3(0, 2, 0);
+      const targetOffset = new THREE.Vector3(0, 1, 0);
       targetOffset.applyQuaternion(characterRotation);
       targetOffset.add(characterPosition);
 
-      this.instance.position.lerp(cameraOffset, 0.1);
+      // this.instance.position.lerp(cameraOffset, 0.1);
       this.controls.target.lerp(targetOffset, 0.1);
     }
   }
