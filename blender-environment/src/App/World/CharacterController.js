@@ -116,18 +116,18 @@ export default class CharacterController {
     if (this.right) {
       movement.x += 1;
     }
-    // if (this.jump && !this.isFalling) {
-    //   velocity_y = 8;
-    //   movement.y += velocity_y * delta;
-    // }
-    // if (this.isFalling) {
-    //   velocity_y -= 9.8 * 2 * delta;
-    //   movement.y += velocity_y * delta;
-    // }
-    // if (!this.isFalling && !this.jump) {
-    //   // Apply a constant downward force when not jumping or falling
-    //   movement.y = -0.1;
-    // }
+    if (this.jump && !this.isFalling) {
+      velocity_y = 8;
+      movement.y += velocity_y * delta;
+    }
+    if (this.isFalling) {
+      velocity_y -= 9.8 * 2 * delta;
+      movement.y += velocity_y * delta;
+    }
+    if (!this.isFalling && !this.jump) {
+      // Apply a constant downward force when not jumping or falling
+      movement.y = -0.1;
+    }
 
     // Rotate character based on movement vector
     if (movement.x !== 0 || movement.z !== 0) {
@@ -141,7 +141,7 @@ export default class CharacterController {
 
     // Normalize and scale movement vector and set y component to -1
     movement.normalize().multiplyScalar(0.1);
-    movement.y = -1;
+    // movement.y = -1;
 
     // Update collider movement and get new position of rigid body
     this.characterController.computeColliderMovement(this.collider, movement);

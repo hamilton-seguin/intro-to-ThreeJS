@@ -69,7 +69,6 @@ export default class Physics {
           indices
         );
         this.world.createCollider(colliderType, this.rigidBody);
-
         break;
     }
 
@@ -97,13 +96,10 @@ export default class Physics {
   }
 
   /**
-   * Computes the radius of a
-   /**
-
-Computes the radius of a sphere collider for a given mesh
-@param {THREE.Mesh} mesh - The mesh to compute the radius for
-@returns {number} The radius of the sphere collider
-*/
+   * Computes the radius of a sphere collider for a given mesh
+   * @param {THREE.Mesh} mesh - The mesh to compute the radius for
+   * @returns {number} The radius of the sphere collider
+   */
   computeBallDimensions(mesh) {
     mesh.geometry.computeBoundingSphere();
     const radius = mesh.geometry.boundingSphere.radius;
@@ -113,10 +109,10 @@ Computes the radius of a sphere collider for a given mesh
   }
 
   /**
-  Computes the scaled vertices and indices of a trimesh collider for a given mesh
-  @param {THREE.Mesh} mesh - The mesh to compute the scaled vertices and indices for
-  @returns {{scaledVertices: number[], indices: number[]}} The scaled vertices and indices of the trimesh collider
-  */
+   * Computes the scaled vertices and indices of a trimesh collider for a given mesh
+   * @param {THREE.Mesh} mesh - The mesh to compute the scaled vertices and indices for
+   * @returns {{scaledVertices: number[], indices: number[]}} The scaled vertices and indices of the trimesh collider
+   */
   computeTrimeshDimensions(mesh) {
     const vertices = mesh.geometry.attributes.position.array;
     const indices = mesh.geometry.index.array;

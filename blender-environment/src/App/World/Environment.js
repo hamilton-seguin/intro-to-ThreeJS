@@ -27,18 +27,36 @@ export default class Environment {
     this.scene.add(environmentScene);
 
     // add physics
-    environmentScene.traverse((obj) => {
-      if (obj.isMesh) {
-        obj.name.includes("boulders") || obj.name.includes("tree")
-          ? this.physics.add(obj, "fixed", "trimesh")
-          : this.physics.add(obj, "fixed", "cuboid");
+    const physicalObjects = [
+      "trees",
+      "boulders",
+      "terrain",
+      "stairs",
+      "gates",
+      "invisibleWalls",
+      "bushes",
+      "pondRocks",
+      "floor",
+      "tiles"
+    ];
+    // loop through the top level of the environment scene and if the name of the object includes any of the strings in the physicalObjects array, traverse the object and add the physics
+    for (const child of environmentScene.children) {
+      const isPhysicalObject = physicalObjects.some((keyword) => child.name.includes(keyword));
+      if (isPhysicalObject) {
+        child.traverse((obj) => {
+          if (obj.isMesh) {
+            if (obj.name.includes("boulders") || obj.parent.name.includes("trees")) {
+              if (obj.parent.name === "trees016") return
+              this.physics.add(obj, "fixed", "trimesh");
+            } else {
+              this.physics.add(obj, "fixed", "cuboid");
+            }
+          }
+        });
       }
-    });
+    }
 
-    this.boulder = environmentScene.children.filter((child) =>
-      child.name.includes("tree")
-    );
-    // console.log(this.boulder);
+    console.log(this.environment.scene.children);
   }
 
   addLights() {
