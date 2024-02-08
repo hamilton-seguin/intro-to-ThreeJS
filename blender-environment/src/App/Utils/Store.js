@@ -17,4 +17,5 @@ export const inputStore = createStore(() => ({
   left: false,
   right: false,
   extra: false,
+  jump: false,
 }));

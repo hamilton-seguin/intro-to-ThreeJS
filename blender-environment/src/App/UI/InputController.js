@@ -34,6 +34,9 @@ export default class InputController {
       case "KeyF":
         inputStore.setState({ extra: true });
         break;
+      case "Space":
+        inputStore.setState({ jump: true });
+        break;
     }
     this.keyPressed[event.code] = true;
   }
@@ -58,6 +61,9 @@ export default class InputController {
         break;
       case "KeyF":
         inputStore.setState({ extra: false });
+        break;
+      case "Space":
+        inputStore.setState({ jump: false });
         break;
     }
     this.keyPressed[event.code] = false;

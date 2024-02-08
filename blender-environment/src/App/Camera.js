@@ -31,7 +31,7 @@ export default class Camera {
     this.instance.lookAt(0, 15, 0);
 
     // pane controls
-    const cameraFolder = this.pane.addFolder({ title: "Camera" });
+    const cameraFolder = this.pane.addFolder({ title: "Camera", expanded: false });
     cameraFolder.addBinding(this.instance, "position", { min: 0, max: 180, step: 1 });
   }
 

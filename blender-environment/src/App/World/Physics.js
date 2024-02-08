@@ -2,13 +2,7 @@ import * as THREE from "three";
 import App from "../App.js";
 import { appStateStore } from "../Utils/Store.js";
 
-/**
- * Class representing a physics simulation
- */
 export default class Physics {
-  /**
-   * Creates an instance of Physics.
-   */
   constructor() {
     // getting the app instance
     this.app = new App();
@@ -19,7 +13,7 @@ export default class Physics {
 
     // setting the physics world
     import("@dimforge/rapier3d").then((RAPIER) => {
-      const gravity = { x: 0, y: -9.81, z: 0 };
+      const gravity = new THREE.Vector3(0, -9.81, 0);
       this.world = new RAPIER.World(gravity);
       this.rapier = RAPIER;
 
@@ -31,8 +25,8 @@ export default class Physics {
   /**
    * Adds a mesh to the physics simulation with a given rigid body type and collider type
    * @param {THREE.Mesh} mesh - The mesh to add to the physics simulation
-   * @param {string} type - The rigid body type ("dynamic" or "fixed")
-   * @param {string} collider - The collider type ("cuboid", "ball", or "trimesh")
+   * @param {string} type - The RAPIER rigid body type ("dynamic" or "fixed")
+   * @param {string} collider - The RAPIER collider type ("cuboid", "ball", or "trimesh")
    */
   add(mesh, type, collider) {
     // defining the rigid body type
@@ -132,8 +126,8 @@ Computes the radius of a sphere collider for a given mesh
     });
     return { scaledVertices, indices };
   }
+
   /**
-  
   The loop function that updates the physics simulation and the mesh positions and rotations
   */
   loop() {

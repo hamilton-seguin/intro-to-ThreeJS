@@ -15,7 +15,7 @@ export default class Environment {
 
     this.loadEnvironment();
     this.addLights();
-    // this.addGround();
+    this.addGUI();
   }
 
   loadEnvironment() {
@@ -29,7 +29,7 @@ export default class Environment {
     // add physics
     environmentScene.traverse((obj) => {
       if (obj.isMesh) {
-        (obj.name.includes("boulders") || obj.name.includes("tree"))
+        obj.name.includes("boulders") || obj.name.includes("tree")
           ? this.physics.add(obj, "fixed", "trimesh")
           : this.physics.add(obj, "fixed", "cuboid");
       }
@@ -39,26 +39,6 @@ export default class Environment {
       child.name.includes("tree")
     );
     // console.log(this.boulder);
-
-    // pane controls
-    const environmentFolder = this.pane.addFolder({ title: "Environment" });
-    environmentFolder.addBinding(environmentScene, "position", {
-      min: -100,
-      max: 100,
-      step: 0.1,
-    });
-    environmentFolder.addBinding(environmentScene, "rotation", {
-      min: -Math.PI,
-      max: Math.PI,
-      step: 0.01,
-    });
-
-    const scale = { value: 1 };
-    environmentFolder
-      .addBinding(scale, "value", { min: 0, max: 3, step: 0.01 })
-      .on("change", () => {
-        environmentScene.scale.setScalar(scale.value);
-      });
   }
 
   addLights() {
@@ -71,14 +51,27 @@ export default class Environment {
     this.scene.add(this.directionalLight);
   }
 
-  addGround() {
-    const groundGeometry = new THREE.BoxGeometry(100, 1, 100);
-    const groundMaterial = new THREE.MeshStandardMaterial({
-      color: "turquoise",
+  addGUI() {
+    const environmentFolder = this.pane.addFolder({
+      title: "Environment",
+      expanded: false,
     });
-    this.groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-    this.groundMesh.position.set(0, 5, 0);
-    this.scene.add(this.groundMesh);
-    this.physics.add(this.groundMesh, "fixed", "cuboid");
+    environmentFolder.addBinding(this.environment.scene, "position", {
+      min: -100,
+      max: 100,
+      step: 0.1,
+    });
+    environmentFolder.addBinding(this.environment.scene, "rotation", {
+      min: -Math.PI,
+      max: Math.PI,
+      step: 0.01,
+    });
+
+    const scale = { value: 1.3 };
+    environmentFolder
+      .addBinding(scale, "value", { min: 0, max: 3, step: 0.01 })
+      .on("change", () => {
+        this.environment.scene.scale.setScalar(scale.value);
+      });
   }
 }

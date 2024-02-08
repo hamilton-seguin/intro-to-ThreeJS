@@ -1,15 +1,13 @@
-// Import necessary modules
 import * as THREE from "three";
+
 import App from "../App.js";
 import { inputStore } from "../Utils/Store.js";
 
-/**
- * Class representing a character controller.
- */
+var clock = new THREE.Clock();
+let velocity_y = 0;
+let delta = 0;
+
 export default class CharacterController {
-  /**
-   * Create a character controller.
-   */
   constructor() {
     // Initialize app, scene, physics, and character properties
     this.app = new App();
@@ -17,12 +15,15 @@ export default class CharacterController {
     this.physics = this.app.world.physics;
     this.character = this.app.world.character.instance;
 
+    this.isFalling = false;
+
     // Subscribe to input store and update movement values
     inputStore.subscribe((state) => {
       this.forward = state.forward;
       this.backward = state.backward;
       this.left = state.left;
       this.right = state.right;
+      this.jump = state.jump;
     });
 
     // Instantiate controller and create rigid body and collider
@@ -39,7 +40,7 @@ export default class CharacterController {
     this.rigidBody = this.physics.world.createRigidBody(this.rigidBodyType);
 
     // Create a cuboid collider
-    this.colliderType = this.physics.rapier.ColliderDesc.cuboid(.3, 1, .3);
+    this.colliderType = this.physics.rapier.ColliderDesc.cuboid(0.3, 1, 0.3);
     this.collider = this.physics.world.createCollider(
       this.colliderType,
       this.rigidBody
@@ -61,10 +62,46 @@ export default class CharacterController {
     this.characterController.enableSnapToGround(1);
   }
 
-  /**
-   * Loop function that updates the character's position and movement.
-   */
+  detectGround() {
+    const avatarHalfHeight = this.character.geometry.parameters.height / 2;
+    // set collider position
+    const colliderPosition = new THREE.Vector3().copy(this.character.position);
+    this.collider.setTranslation(colliderPosition);
+  
+    const rayDirection = new THREE.Vector3(0, -1, 0);
+    // hitting the ground
+    const rayOrigin = new THREE.Vector3().copy(this.character.position);
+    // ray origin is slightly above the foot of the avatar
+    rayOrigin.y -= avatarHalfHeight - 0.1;
+  
+    const ray = new this.physics.rapier.Ray(rayOrigin, rayDirection);
+  
+    const groundUnderFootHit = this.physics.world.castRay(
+      ray,
+      1000,
+      true,
+      this.physics.rapier.QueryFilterFlags.EXCLUDE_DYNAMIC,
+      undefined,
+      this.collider,
+      this.rigidBody
+    );
+  
+    if (groundUnderFootHit) {
+      const hitPoint = ray.pointAt(groundUnderFootHit.toi);
+      const distance = rayOrigin.y - hitPoint.y;
+  
+      if (distance <= 0) {
+        // * Grounded
+        this.isFalling = false;
+      } else {
+        this.isFalling = true;
+      }
+    }
+  }
+  
   loop() {
+    delta = clock.getDelta();
+    // this.detectGround();
     // Initialize movement vector based on input values
     const movement = new THREE.Vector3();
     if (this.forward) {
@@ -79,9 +116,21 @@ export default class CharacterController {
     if (this.right) {
       movement.x += 1;
     }
+    // if (this.jump && !this.isFalling) {
+    //   velocity_y = 8;
+    //   movement.y += velocity_y * delta;
+    // }
+    // if (this.isFalling) {
+    //   velocity_y -= 9.8 * 2 * delta;
+    //   movement.y += velocity_y * delta;
+    // }
+    // if (!this.isFalling && !this.jump) {
+    //   // Apply a constant downward force when not jumping or falling
+    //   movement.y = -0.1;
+    // }
 
     // Rotate character based on movement vector
-    if (movement.length() !== 0) {
+    if (movement.x !== 0 || movement.z !== 0) {
       const angle = Math.atan2(movement.x, movement.z) + Math.PI;
       const characterRotation = new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
@@ -96,6 +145,7 @@ export default class CharacterController {
 
     // Update collider movement and get new position of rigid body
     this.characterController.computeColliderMovement(this.collider, movement);
+
     const newPosition = new THREE.Vector3()
       .copy(this.rigidBody.translation())
       .add(this.characterController.computedMovement());
