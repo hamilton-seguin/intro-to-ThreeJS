@@ -10,6 +10,7 @@ export default class Renderer {
     this.scene = this.app.scene;
     this.sizesStore = sizesStore;
     this.sizes = this.sizesStore.getState();
+    this.pane = this.app.gui.pane;
 
     this.setInstance();
     this.setResizeLister();
@@ -22,9 +23,9 @@ export default class Renderer {
     });
     this.instance.setSize(this.sizes.width, this.sizes.height);
     this.instance.setPixelRatio(this.sizes.pixelRatio);
-    this.instance.outputEncoding = THREE.sRGBEncoding; // deprecated but gives good colors to glb / bad to rest
-    // this.instance.outputColorSpace = THREE.SRGBColorSpace; // new by default, gives good colors to glb / bad to rest
+    this.instance.outputEncoding = THREE.sRGBEncoding; // by default in new version of three.js but this project uses an older version
     this.instance.shadowMap.enabled = true;
+    this.instance.shadowMap.type = THREE.PCFSoftShadowMap;
   }
 
   setResizeLister() {

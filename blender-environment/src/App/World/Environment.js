@@ -94,8 +94,8 @@ export default class Environment {
   }
 
   addLights() {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    this.scene.add(ambientLight);
+    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    this.scene.add(this.ambientLight);
 
     this.directionalLight = new THREE.DirectionalLight(0xe37730, 0.5);
     this.directionalLight.position.set(34, 50, -29);
@@ -110,11 +110,6 @@ export default class Environment {
     this.directionalLight.target = floorObject;
     this.scene.add(this.directionalLight);
 
-    const directionalLightShadowHelper = new THREE.CameraHelper(
-      this.directionalLight.shadow.camera
-    );
-    this.scene.add(directionalLightShadowHelper);
-
     this.directWaterLight = new THREE.DirectionalLight(0x35359c, 0.1);
     this.directWaterLight.position.set(-19, 15, -38);
     this.directWaterLight.name = "directWaterLight";
@@ -126,17 +121,12 @@ export default class Environment {
     const pondObject = this.scene.children[0].children[515];
     this.directWaterLight.target = pondObject;
     this.scene.add(this.directWaterLight);
-
-    const directWaterLightShadowHelper = new THREE.CameraHelper(
-      this.directWaterLight.shadow.camera
-    );
-    this.scene.add(directWaterLightShadowHelper);
   }
 
   addGUI() {
     const shadowFolder = this.pane.addFolder({
       title: "Shadow",
-      expanded: true,
+      expanded: false,
     });
     shadowFolder.addBinding(this.directWaterLight, "position", {
       min: -1000,
@@ -160,6 +150,16 @@ export default class Environment {
       min: -0.1,
       max: 0.1,
       step: 0.0001,
+    });
+
+    const lightFolder = this.pane.addFolder({
+      title: "Light",
+      expanded: false,
+    });
+    lightFolder.addBinding(this.ambientLight, "intensity", {
+      min: -2,
+      max: 2,
+      step: 0.01,
     });
 
     const environmentFolder = this.pane.addFolder({
