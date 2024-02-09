@@ -24,6 +24,7 @@ export default class Renderer {
     this.instance.setPixelRatio(this.sizes.pixelRatio);
     this.instance.outputEncoding = THREE.sRGBEncoding; // deprecated but gives good colors to glb / bad to rest
     // this.instance.outputColorSpace = THREE.SRGBColorSpace; // new by default, gives good colors to glb / bad to rest
+    this.instance.shadowMap.enabled = true;
   }
 
   setResizeLister() {
