@@ -175,7 +175,7 @@ export default class Environment {
 
   loop() {
     this.portalBot.loop();
-    // this.portalMid.loop();
-    // this.portalTop.loop();
+    this.portalMid.loop();
+    this.portalTop.loop();
   }
 }

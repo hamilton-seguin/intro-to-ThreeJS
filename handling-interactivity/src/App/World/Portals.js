@@ -9,7 +9,25 @@ export default class Portal {
     this.app = new App();
     this.portalMesh = portalMesh;
     this.modalInfo = modalInfo;
-    this.modalManager = new ModalManager()
+    this.modalManager = new ModalManager();
+
+    this.portalNearMaterial = new THREE.MeshBasicMaterial({
+      color: 0x863AD4,
+      transparent: true,
+      opacity: 0.6,
+    });
+    this.portalNearMaterial.side = THREE.DoubleSide;
+
+    this.portalFarMaterial = new THREE.MeshBasicMaterial({
+      color: 0x4B2076,
+      transparent: true,
+      opacity: 0.8,
+    });
+    this.portalFarMaterial.side = THREE.DoubleSide;
+
+    this.portalMesh.material = this.portalFarMaterial;
+
+    this.prevIsNear = false;
   }
 
   loop() {
@@ -25,10 +43,20 @@ export default class Portal {
         new THREE.Vector3()
       );
       const distance = this.character.position.distanceTo(portalPosition);
-      // const isNear = distance < 1.5;
-      // if (isNear) {
-      //   this.modalManager.openModal(this.modalInfo.title, this.modalInfo.description);
-      // }
+      const isNear = distance < 2.5;
+      if (isNear) {
+        if (!this.prevIsNear) {
+          this.modalManager.openModal(this.modalInfo.title, this.modalInfo.description);
+          this.portalMesh.material = this.portalNearMaterial;
+          this.prevIsNear = true;
+        }
+      } else {
+        if (this.prevIsNear) {
+          this.modalManager.closeModal();
+          this.portalMesh.material = this.portalFarMaterial;
+          this.prevIsNear = false;
+        }
+      }
     }
   }
 }

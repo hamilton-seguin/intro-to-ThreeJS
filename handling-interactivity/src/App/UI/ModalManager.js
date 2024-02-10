@@ -10,12 +10,10 @@ export default class ModalManager {
   openModal(title, description) {
     document.getElementById("modalTitle").innerHTML = title;
     document.getElementById("modalDescription").innerHTML = description;
-    setTimeout(() => {
-      this.modal.style.display = "block";
-    }, 600);
-    this.modal.style.opacity = 1;
     this.modal.classList.remove("fadeOut");
     this.modal.classList.add("fadeIn");
+    this.modal.style.display = "block";
+    this.modal.style.opacity = 1;
   }
 
   closeModal() {
