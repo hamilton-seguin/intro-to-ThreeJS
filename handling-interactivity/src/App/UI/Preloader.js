@@ -36,9 +36,10 @@ export default class Preloader {
     this.startButton.classList.add("fadeIn");
 
     const hAvatarClickHandler = () => {
+      this.mAvatar.removeEventListener("click", mAvatarClickHandler);
       this.app.world.setCharacter("hAvatar");
       this.removeOverlay();
-      this.mAvatar.removeEventListener("click", mAvatarClickHandler);
+      console.log(this.app.world);
     };
 
     const mAvatarClickHandler = () => {

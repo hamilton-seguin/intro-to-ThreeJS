@@ -2,6 +2,8 @@ import * as THREE from "three";
 
 import App from "../App.js";
 import assetStore from "../Utils/AssetStore.js";
+import Portal from "./Portals.js";
+import ModalContentProvider from "../UI/ModalContentProvider.js";
 
 export default class Environment {
   constructor() {
@@ -16,6 +18,7 @@ export default class Environment {
     this.loadEnvironment();
     this.addLights();
     this.addGUI();
+    this.addPortals();
   }
 
   loadEnvironment() {
@@ -54,13 +57,16 @@ export default class Environment {
     for (const child of environmentScene.children) {
       child.traverse((obj) => {
         if (obj.isMesh) {
-          obj.castShadow = shadowCasters.some((keyword) => child.name.includes(keyword))
-          obj.receiveShadow = shadowReceivers.some((keyword) => child.name.includes(keyword))
-          if (physicalObjects.some((keyword) => child.name.includes(keyword))) {
-            this.physics.add(obj, "fixed", "cuboid")
+          obj.castShadow = shadowCasters.some((keyword) => child.name.includes(keyword));
+          obj.receiveShadow = shadowReceivers.some((keyword) => child.name.includes(keyword));
+          if (obj.name.includes("boulders")||obj.parent.name.includes("trees")) {
+            this.physics.add(obj, "fixed", "trimesh");
+          } else if (physicalObjects.some((keyword) => child.name.includes(keyword))) {
+            if (obj.name.includes("tilesEmpty")) return;
+            this.physics.add(obj, "fixed", "cuboid");
           }
         }
-      })
+      });
     }
   }
 
@@ -75,9 +81,9 @@ export default class Environment {
     this.directionalLight.shadow.camera.right = 40;
     this.directionalLight.shadow.camera.bottom = -30;
     this.directionalLight.shadow.camera.left = -40;
-    this.directionalLight.shadow.bias = -0.0013;
-    this.directionalLight.shadow.normalBias = -0.1;
-    const floorObject = this.scene.children[0].children[0];
+    this.directionalLight.shadow.bias = -0.0004;
+    this.directionalLight.shadow.normalBias = -0.0717;
+    const floorObject = this.scene.getObjectByName("floor");
     this.directionalLight.target = floorObject;
     this.scene.add(this.directionalLight);
 
@@ -89,9 +95,21 @@ export default class Environment {
     this.directWaterLight.shadow.camera.right = 3;
     this.directWaterLight.shadow.camera.bottom = -3;
     this.directWaterLight.shadow.camera.left = -3;
-    const pondObject = this.scene.children[0].children[515];
+    const pondObject = this.scene.getObjectByName("pond");
     this.directWaterLight.target = pondObject;
     this.scene.add(this.directWaterLight);
+  }
+
+  addPortals(){
+    const portalBotMesh = this.environment.scene.getObjectByName("portalBot");
+    const portalMidMesh = this.environment.scene.getObjectByName("portalMid");
+    const portalTopMesh = this.environment.scene.getObjectByName("portalTop");
+
+    const modalContentProvider = new ModalContentProvider();
+
+    this.portalBot = new Portal(portalBotMesh, modalContentProvider.getModalInfo("aboutMe"));
+    this.portalMid = new Portal(portalMidMesh, modalContentProvider.getModalInfo("projects"));
+    this.portalTop = new Portal(portalTopMesh, modalContentProvider.getModalInfo("contactMe"));
   }
 
   addGUI() {
@@ -99,25 +117,25 @@ export default class Environment {
       title: "Shadow",
       expanded: false,
     });
-    shadowFolder.addBinding(this.directWaterLight, "position", {
+    shadowFolder.addBinding(this.directionalLight, "position", {
       min: -1000,
       max: 1000,
       step: 1,
     });
-    shadowFolder.addBinding(this.directWaterLight, "color", {
+    shadowFolder.addBinding(this.directionalLight, "color", {
       view: "text",
     });
-    shadowFolder.addBinding(this.directWaterLight, "intensity", {
+    shadowFolder.addBinding(this.directionalLight, "intensity", {
       min: 0,
       max: 2,
       step: 0.01,
     });
-    shadowFolder.addBinding(this.directWaterLight.shadow, "bias", {
+    shadowFolder.addBinding(this.directionalLight.shadow, "bias", {
       min: -0.1,
       max: 0.1,
       step: 0.0001,
     });
-    shadowFolder.addBinding(this.directWaterLight.shadow, "normalBias", {
+    shadowFolder.addBinding(this.directionalLight.shadow, "normalBias", {
       min: -0.1,
       max: 0.1,
       step: 0.0001,
@@ -153,5 +171,11 @@ export default class Environment {
       .on("change", () => {
         this.environment.scene.scale.setScalar(scale.value);
       });
+  }
+
+  loop() {
+    this.portalBot.loop();
+    // this.portalMid.loop();
+    // this.portalTop.loop();
   }
 }

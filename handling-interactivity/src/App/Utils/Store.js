@@ -9,6 +9,7 @@ export const sizesStore = createStore(() => ({
 export const appStateStore = createStore(() => ({
   physicsReady: false,
   assetsReady: false,
+  characterReady: false,
 }));
 
 export const inputStore = createStore(() => ({

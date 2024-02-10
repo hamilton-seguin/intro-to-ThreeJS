@@ -31,10 +31,12 @@ export default class World {
     this.character = new Character(avatar);
     this.characterController = new CharacterController();
     this.animationController = new AnimationController();
+    appStateStore.setState({ characterReady: true });
   }
 
   loop(deltaTime, elapsedTime) {
     this.physics.loop();
+    if (this.environment) this.environment.loop()
     if (this.characterController) this.characterController.loop();
     if (this.animationController) this.animationController.loop(deltaTime);
   }

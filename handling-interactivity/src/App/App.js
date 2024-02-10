@@ -1,13 +1,14 @@
 import * as THREE from "three";
 import Camera from "./Camera.js";
 import Renderer from "./Renderer.js";
+import World from "./World/World.js";
 import Loop from "./Utils/Loop.js";
 import GUI from "./Utils/GUI.js";
-import World from "./World/World.js";
 import Resize from "./Utils/Resize.js";
 import AssetLoader from "./Utils/AssetLoader.js";
 import Preloader from "./UI/Preloader.js";
 import InputController from "./UI/InputController.js";
+import ModalManager from "./UI/ModalManager.js";
 
 let instance = null;
 
@@ -15,6 +16,8 @@ export default class App {
   constructor() {
     if (instance) return instance;
     instance = this;
+
+    window.ModalManager = new ModalManager();
 
     // threejs elements
     this.canvas = document.querySelector("canvas.threejs");
