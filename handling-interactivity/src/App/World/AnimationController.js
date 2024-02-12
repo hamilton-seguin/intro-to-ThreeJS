@@ -12,6 +12,7 @@ export default class AnimationController {
     inputStore.subscribe((input) => this.onInput(input));
 
     this.instantiateAnimations();
+    // console.log(this.avatar.animations);
   }
 
   instantiateAnimations() {
@@ -36,7 +37,9 @@ export default class AnimationController {
   }
 
   onInput(input) {
-    if (input.forward || input.backward || input.left || input.right) {
+    if (input.jump) {
+      this.playAnimation("Jumping");
+    } else if (input.forward || input.backward || input.left || input.right) {
       this.playAnimation("Running");
     } else if (input.extra) {
       this.animations.get("Dancing")

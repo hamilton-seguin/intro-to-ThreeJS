@@ -8,19 +8,20 @@ export default class ModalManager {
 
     this.close.onclick = () => {
       if (this.restartCallback) {
-        this.restartCallback(); // Execute the restart callback if set
+        this.restartCallback();
+        this.restartCallback = null;
       }
       this.closeModal();
     };
   }
 
-  openModal(title, description, imgPath, typeDeath, restartCallback = null) {
+  openModal(title, description, imgPath, typeDeath, restartCallback) {
     document.getElementById("modalTitle").innerHTML = title;
     description
       ? (this.description.innerHTML = description)
       : (this.description.innerHTML = null);
     imgPath ? (this.img.src = imgPath) : (this.img.src = null);
-    if (typeDeath) {
+    if (typeDeath && restartCallback) {
       this.close.innerHTML = "Restart";
       this.restartCallback = restartCallback; // Store the callback
     } else {
