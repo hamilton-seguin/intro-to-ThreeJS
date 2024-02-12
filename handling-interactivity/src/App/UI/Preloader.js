@@ -39,7 +39,6 @@ export default class Preloader {
       this.mAvatar.removeEventListener("click", mAvatarClickHandler);
       this.app.world.setCharacter("hAvatar");
       this.removeOverlay();
-      console.log(this.app.world);
     };
 
     const mAvatarClickHandler = () => {
