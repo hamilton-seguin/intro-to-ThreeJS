@@ -81,8 +81,8 @@ export default class Environment {
     this.directionalLight.shadow.camera.right = 40;
     this.directionalLight.shadow.camera.bottom = -30;
     this.directionalLight.shadow.camera.left = -40;
-    this.directionalLight.shadow.bias = -0.0004;
-    this.directionalLight.shadow.normalBias = -0.0717;
+    this.directionalLight.shadow.bias = -0.0003;
+    this.directionalLight.shadow.normalBias = -0.0891;
     const floorObject = this.scene.getObjectByName("floor");
     this.directionalLight.target = floorObject;
     this.scene.add(this.directionalLight);

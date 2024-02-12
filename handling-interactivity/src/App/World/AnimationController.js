@@ -12,7 +12,6 @@ export default class AnimationController {
     inputStore.subscribe((input) => this.onInput(input));
 
     this.instantiateAnimations();
-    // console.log(this.avatar.animations);
   }
 
   instantiateAnimations() {
