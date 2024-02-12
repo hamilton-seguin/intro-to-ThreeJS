@@ -17,7 +17,7 @@ export default class App {
     if (instance) return instance;
     instance = this;
 
-    window.ModalManager = new ModalManager();
+    window.ModalManager = new ModalManager(); //? for debugging
 
     // threejs elements
     this.canvas = document.querySelector("canvas.threejs");

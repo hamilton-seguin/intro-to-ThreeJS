@@ -1,13 +1,15 @@
 import * as THREE from "three";
-import RAPIER from "@dimforge/rapier3d";
 
 import App from "../App.js";
 import { inputStore } from "../Utils/Store.js";
+import ModalManager from "../UI/ModalManager.js";
+
 
 const clock = new THREE.Clock();
 const GRAVITY = 9.8;
 let velocity_y = 0;
 let delta = 0;
+let alreadyDead = false;
 
 export default class CharacterController {
   constructor() {
@@ -16,6 +18,8 @@ export default class CharacterController {
     this.scene = this.app.scene;
     this.physics = this.app.world.physics;
     this.character = this.app.world.character.instance;
+    this.character.name = "character-collider-box";
+    this.modalManager = new ModalManager();
 
     this.isFalling = false;
     this.canJump = true;
@@ -45,16 +49,12 @@ export default class CharacterController {
     this.rigidBody = this.physics.world.createRigidBody(this.rigidBodyType);
 
     // Create a cuboid collider
-    this.colliderType = this.physics.rapier.ColliderDesc.cuboid(
-      0.3,
-      1,
-      0.3
-    ).setActiveEvents(
-      this.physics.rapier.ActiveEvents.COLLISION_EVENTS
-    ).setActiveCollisionTypes(
-      this.physics.rapier.ActiveCollisionTypes.DEFAULT | 
-      this.physics.rapier.ActiveCollisionTypes.KINEMATIC_FIXED
-    )
+    this.colliderType = this.physics.rapier.ColliderDesc.cuboid(0.3, 1, 0.3)
+      .setActiveEvents(this.physics.rapier.ActiveEvents.COLLISION_EVENTS)
+      .setActiveCollisionTypes(
+        this.physics.rapier.ActiveCollisionTypes.DEFAULT |
+          this.physics.rapier.ActiveCollisionTypes.KINEMATIC_FIXED
+      );
     this.collider = this.physics.world.createCollider(
       this.colliderType,
       this.rigidBody
@@ -112,25 +112,8 @@ export default class CharacterController {
         this.isFalling = true;
       }
     } else {
-      // * Shoot another ray up to see if we've passed the ground
-      ray.dir = new THREE.Vector3(0, 1, 0);
-      const groundAboveFootHit = physics.castRay(
-        ray,
-        this.avatar.height / 2,
-        true,
-        this.physics.rapier.QueryFilterFlags.EXCLUDE_DYNAMIC,
-        undefined,
-        this.collider,
-        this.rigidBody
-      );
-
-      if (groundAboveFootHit) {
-        // * passed the ground
-        this.position.y = this.heightController.lastGroundHeight;
-        this.heightController.setGrounded(true);
-      } else {
-        this.heightController.setGrounded(false);
-      }
+      // * Falling beyond limit
+      this.isFalling = true;
     }
     return this.isFalling;
   }
@@ -140,6 +123,37 @@ export default class CharacterController {
     // This can be adjusted based on your game's gravity and desired jump dynamics.
     const jumpHeight = 1.6; // Desired jump height in units
     return Math.sqrt(3 * GRAVITY * jumpHeight); // Simplified jump velocity calculation
+  }
+
+  resetCharacter() {
+    this.character.position.set(0, 10, 0);
+    this.rigidBody.setTranslation({ x: 0, y: 10, z: 0 });
+    velocity_y = 0;
+    this.isFalling = false;
+    this.canJump = true;
+    alreadyDead = false;
+  }
+  
+  updateCharacterRotation(movement) {
+    const angle = Math.atan2(movement.x, movement.z) + Math.PI;
+    const characterRotation = new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(0, 1, 0),
+      angle
+    );
+    this.character.quaternion.slerp(characterRotation, 0.1);
+  }
+
+  applyMovement(movement) {
+    // Update collider movement and get new position of rigid body
+    this.characterController.computeColliderMovement(this.collider, movement);
+
+    const newPosition = new THREE.Vector3()
+      .copy(this.rigidBody.translation())
+      .add(this.characterController.computedMovement());
+
+    // Set next kinematic translation of rigid body and update character position
+    this.rigidBody.setNextKinematicTranslation(newPosition);
+    this.character.position.lerp(this.rigidBody.translation(), 0.25);
   }
 
   loop() {
@@ -156,6 +170,7 @@ export default class CharacterController {
       ) {
         this.isFalling = false; // Character has made contact with the ground
         this.canJump = true; // Allow jumping again
+        velocity_y = 0; // Reset the vertical velocity
       }
     });
 
@@ -199,29 +214,9 @@ export default class CharacterController {
     }
     this.applyMovement(finalMovement);
 
-    if (this.character.position.y < -70) {
-      console.log("you died");
+    if (this.character.position.y < -70 && !alreadyDead) {
+      this.modalManager.openModal("Game Over", null, "/image/you-ded.webp", true, this.resetCharacter.bind(this)); 
+      alreadyDead = true;
     }
-  }
-
-  updateCharacterRotation(movement) {
-    const angle = Math.atan2(movement.x, movement.z) + Math.PI;
-    const characterRotation = new THREE.Quaternion().setFromAxisAngle(
-      new THREE.Vector3(0, 1, 0),
-      angle
-    );
-    this.character.quaternion.slerp(characterRotation, 0.1);
-  }
-  applyMovement(movement) {
-    // Update collider movement and get new position of rigid body
-    this.characterController.computeColliderMovement(this.collider, movement);
-
-    const newPosition = new THREE.Vector3()
-      .copy(this.rigidBody.translation())
-      .add(this.characterController.computedMovement());
-
-    // Set next kinematic translation of rigid body and update character position
-    this.rigidBody.setNextKinematicTranslation(newPosition);
-    this.character.position.lerp(this.rigidBody.translation(), 0.25);
   }
 }
