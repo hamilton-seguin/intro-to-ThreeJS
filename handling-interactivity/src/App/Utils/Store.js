@@ -10,6 +10,7 @@ export const appStateStore = createStore(() => ({
   physicsReady: false,
   assetsReady: false,
   characterReady: false,
+  isFalling: false,
 }));
 
 export const inputStore = createStore(() => ({

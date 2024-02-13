@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 import App from "../App.js";
 import { inputStore } from "../Utils/Store.js";
+import { appStateStore } from "../Utils/Store.js";
 import ModalManager from "../UI/ModalManager.js";
 
 
@@ -21,7 +22,9 @@ export default class CharacterController {
     this.character.name = "character-collider-box";
     this.modalManager = new ModalManager();
 
-    this.isFalling = false;
+    appStateStore.subscribe((state) => {
+      this.isFalling = state.isFalling;
+    })
     this.canJump = true;
 
     // Subscribe to input store and update movement values
@@ -105,22 +108,20 @@ export default class CharacterController {
 
       if (distance < 0.2) {
         // * Grounded
-        this.isFalling = false;
+        appStateStore.setState({ isFalling: false });
         this.character.position.y = hitPoint.y + avatarHalfHeight + 0.05;
       } else {
         // * Falling
-        this.isFalling = true;
+        appStateStore.setState({ isFalling: true });
       }
     } else {
       // * Falling beyond limit
-      this.isFalling = true;
+      appStateStore.setState({ isFalling: true });
     }
     return this.isFalling;
   }
 
   calculateJumpVelocity() {
-    // Simple formula to calculate jump velocity for a desired jump height.
-    // This can be adjusted based on your game's gravity and desired jump dynamics.
     const jumpHeight = 1.6; // Desired jump height in units
     return Math.sqrt(3 * GRAVITY * jumpHeight); // Simplified jump velocity calculation
   }
@@ -129,7 +130,7 @@ export default class CharacterController {
     this.character.position.set(0, 10, 0);
     this.rigidBody.setTranslation({ x: 0, y: 10, z: 0 });
     velocity_y = 0;
-    this.isFalling = false;
+    appStateStore.setState({ isFalling: false });
     this.canJump = true;
     alreadyDead = false;
   }
@@ -168,7 +169,7 @@ export default class CharacterController {
           handle2 === characterColliderHandle) &&
         started
       ) {
-        this.isFalling = false; // Character has made contact with the ground
+        appStateStore.setState({ isFalling: false }); // Character has made contact with the ground
         this.canJump = true; // Allow jumping again
         velocity_y = 0; // Reset the vertical velocity
       }
@@ -189,15 +190,14 @@ export default class CharacterController {
       movement.x += 1;
     }
 
-    if (this.isFalling || !this.isFalling) {
-      velocity_y -= GRAVITY * delta * 2.5; // Apply gravity to the velocity
-    }
     if (this.jump && this.canJump && !this.isFalling && movement.y < 0.05) {
       velocity_y = this.calculateJumpVelocity(); // Calculate the initial jump velocity
-      this.canJump = false; // Prevent further jumps until reset
+      this.canJump = false;
     } else if (!this.jump && movement.y < 0.05) {
       this.canJump = true; // Reset jump capability when spacebar released
     }
+
+    velocity_y -= GRAVITY * delta * 2.5;
     movement.y += velocity_y * delta;
 
     const horizontalMovement = new THREE.Vector3(movement.x, 0, movement.z)
@@ -218,5 +218,6 @@ export default class CharacterController {
       this.modalManager.openModal("Game Over", null, "/image/you-ded.webp", true, this.resetCharacter.bind(this)); 
       alreadyDead = true;
     }
+
   }
 }

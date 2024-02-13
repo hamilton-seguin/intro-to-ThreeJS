@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 import App from "../App";
 import { inputStore } from "../Utils/Store";
+import { appStateStore } from "../Utils/Store";
 
 export default class AnimationController {
   constructor() {
@@ -10,6 +11,9 @@ export default class AnimationController {
     this.avatar = this.app.world.character.avatar;
 
     inputStore.subscribe((input) => this.onInput(input));
+    appStateStore.subscribe((state) => {
+      this.isFalling = state.isFalling;
+    });
 
     this.instantiateAnimations();
   }
@@ -36,14 +40,14 @@ export default class AnimationController {
   }
 
   onInput(input) {
-    if (input.jump) {
+    if (input.jump && !this.isFalling) {
       this.playAnimation("Jumping");
     } else if (input.forward || input.backward || input.left || input.right) {
       this.playAnimation("Running");
     } else if (input.extra) {
       this.animations.get("Dancing")
-        ? this.playAnimation("Dancing")
-        : this.playAnimation("Idle-Hand");
+        ? this.playAnimation("Dancing") 
+        : this.playAnimation("Idle-Hand") 
     } else {
       this.playAnimation("Idle");
     }
