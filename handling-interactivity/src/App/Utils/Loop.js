@@ -1,6 +1,11 @@
 import * as THREE from "three";
 import App from "../App.js";
 
+import Stats from "stats.js";
+let stats = new Stats()
+stats.showPanel(0)
+document.body.appendChild(stats.dom)
+
 export default class Loop {
   constructor() {
     this.app = new App();
@@ -14,6 +19,7 @@ export default class Loop {
   }
 
   loop() {
+    stats.begin()
     const elapsedTime = this.clock.getElapsedTime();
     const deltaTime = elapsedTime - this.previousElapsedTime;
     this.previousElapsedTime = elapsedTime;
@@ -22,5 +28,6 @@ export default class Loop {
     this.camera.loop(deltaTime);
     this.renderer.loop();
     window.requestAnimationFrame(() => this.loop());
+    stats.end()
   }
 }
