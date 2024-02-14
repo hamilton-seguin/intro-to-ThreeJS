@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 import App from "../App.js";
 import assetStore from "../Utils/AssetStore.js";
-import Portal from "./Portals.js";
+import Portal from "../UI/ModalController.js";
 import ModalContentProvider from "../UI/ModalContentProvider.js";
 
 export default class Environment {
@@ -57,11 +57,20 @@ export default class Environment {
     for (const child of environmentScene.children) {
       child.traverse((obj) => {
         if (obj.isMesh) {
-          obj.castShadow = shadowCasters.some((keyword) => child.name.includes(keyword));
-          obj.receiveShadow = shadowReceivers.some((keyword) => child.name.includes(keyword));
-          if (obj.name.includes("boulders")||obj.parent.name.includes("trees")) {
+          obj.castShadow = shadowCasters.some((keyword) =>
+            child.name.includes(keyword)
+          );
+          obj.receiveShadow = shadowReceivers.some((keyword) =>
+            child.name.includes(keyword)
+          );
+          if (
+            obj.name.includes("boulders") ||
+            obj.parent.name.includes("trees")
+          ) {
             this.physics.add(obj, "fixed", "trimesh");
-          } else if (physicalObjects.some((keyword) => child.name.includes(keyword))) {
+          } else if (
+            physicalObjects.some((keyword) => child.name.includes(keyword))
+          ) {
             if (obj.name.includes("tilesEmpty")) return;
             this.physics.add(obj, "fixed", "cuboid");
           }
@@ -100,16 +109,30 @@ export default class Environment {
     this.scene.add(this.directWaterLight);
   }
 
-  addPortals(){
+  addPortals() {
     const portalBotMesh = this.environment.scene.getObjectByName("portalBot");
     const portalMidMesh = this.environment.scene.getObjectByName("portalMid");
     const portalTopMesh = this.environment.scene.getObjectByName("portalTop");
+    const tutorialTileMesh = this.environment.scene.getObjectByName("tiles014");
 
     const modalContentProvider = new ModalContentProvider();
 
-    this.portalBot = new Portal(portalBotMesh, modalContentProvider.getModalInfo("aboutMe"));
-    this.portalMid = new Portal(portalMidMesh, modalContentProvider.getModalInfo("projects"));
-    this.portalTop = new Portal(portalTopMesh, modalContentProvider.getModalInfo("contactMe"));
+    this.portalBot = new Portal(
+      portalBotMesh,
+      modalContentProvider.getModalInfo("aboutMe")
+    );
+    this.portalMid = new Portal(
+      portalMidMesh,
+      modalContentProvider.getModalInfo("projects")
+    );
+    this.portalTop = new Portal(
+      portalTopMesh,
+      modalContentProvider.getModalInfo("contactMe")
+    );
+    this.tutorialTile = new Portal(
+      tutorialTileMesh,
+      modalContentProvider.getModalInfo("tutorial")
+    );
   }
 
   addGUI() {
@@ -177,5 +200,6 @@ export default class Environment {
     this.portalBot.loop();
     this.portalMid.loop();
     this.portalTop.loop();
+    this.tutorialTile.loop();
   }
 }
