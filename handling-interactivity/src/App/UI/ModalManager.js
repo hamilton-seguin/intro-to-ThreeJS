@@ -1,6 +1,6 @@
 export default class ModalManager {
   constructor() {
-    this.modal = document.getElementById("myModal");
+    this.modal = document.getElementById("modal");
     this.close = document.getElementsByClassName("close")[0];
     this.description = document.getElementById("modalDescription");
     this.img = document.getElementById("modalImg");
@@ -28,18 +28,11 @@ export default class ModalManager {
       this.close.innerHTML = "Close";
       this.restartCallback = null; // Clear the callback if not applicable
     }
-    this.modal.classList.remove("fadeOut");
-    this.modal.classList.add("fadeIn");
-    this.modal.style.display = "block";
-    this.modal.style.opacity = 1;
+
+    this.modal.classList.add("visible");
   }
 
   closeModal() {
-    this.modal.classList.remove("fadeIn");
-    this.modal.classList.add("fadeOut");
-    setTimeout(() => {
-      this.modal.style.display = "none";
-    }, 600);
-    this.modal.style.opacity = 0;
+    this.modal.classList.remove("visible");
   }
 }
