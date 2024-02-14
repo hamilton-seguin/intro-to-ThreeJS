@@ -34,7 +34,7 @@ export default class ModalController {
     this.prevIsNear = false;
 
     const modalPortal = this.pane.addFolder({
-      title: "Modal",
+      title: `${this.mesh.name}`,
       expanded: false,
     });
     modalPortal.addBinding(this.mesh.material, "opacity", {
