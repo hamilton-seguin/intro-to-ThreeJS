@@ -39,6 +39,12 @@ export default class InputController {
         break;
     }
     this.keyPressed[event.code] = true;
+    // jump is after the key pressed to avoid double jump
+    switch (event.code) {
+      case "Space":
+        inputStore.setState({ jump: true });
+        break;
+    }
   }
 
   onKeyUp(event) {
@@ -62,10 +68,12 @@ export default class InputController {
       case "KeyF":
         inputStore.setState({ extra: false });
         break;
+    }
+    this.keyPressed[event.code] = false;
+    switch (event.code) {
       case "Space":
         inputStore.setState({ jump: false });
         break;
     }
-    this.keyPressed[event.code] = false;
   }
 }

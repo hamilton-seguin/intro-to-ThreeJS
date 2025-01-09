@@ -5,7 +5,6 @@ import { inputStore } from "../Utils/Store.js";
 import { appStateStore } from "../Utils/Store.js";
 import ModalManager from "../UI/ModalManager.js";
 
-
 const clock = new THREE.Clock();
 const GRAVITY = 9.8;
 let velocity_y = 0;
@@ -22,10 +21,9 @@ export default class CharacterController {
     this.character.name = "character-collider-box";
     this.modalManager = new ModalManager();
 
-    appStateStore.subscribe((state) => {
-      this.isFalling = state.isFalling;
-    })
+    appStateStore.subscribe((state) => { this.isFalling = state.isFalling });
     this.canJump = true;
+    this.jumpReleased = true;
 
     // Subscribe to input store and update movement values
     inputStore.subscribe((state) => {
@@ -34,6 +32,7 @@ export default class CharacterController {
       this.left = state.left;
       this.right = state.right;
       this.jump = state.jump;
+      if (!state.jump) this.jumpReleased = true;
     });
 
     // Instantiate controller and create rigid body and collider
@@ -109,14 +108,18 @@ export default class CharacterController {
       if (distance < 0.2) {
         // * Grounded
         appStateStore.setState({ isFalling: false });
-        this.character.position.y = hitPoint.y + avatarHalfHeight + 0.05;
+        this.canJump = true;
+        velocity_y = 0;
+        // this.character.position.y = hitPoint.y + avatarHalfHeight + 0.05;
       } else {
         // * Falling
         appStateStore.setState({ isFalling: true });
+        this.canJump = false;
       }
     } else {
       // * Falling beyond limit
       appStateStore.setState({ isFalling: true });
+      this.canJump = false;
     }
     return this.isFalling;
   }
@@ -134,7 +137,7 @@ export default class CharacterController {
     this.canJump = true;
     alreadyDead = false;
   }
-  
+
   updateCharacterRotation(movement) {
     const angle = Math.atan2(movement.x, movement.z) + Math.PI;
     const characterRotation = new THREE.Quaternion().setFromAxisAngle(
@@ -148,16 +151,25 @@ export default class CharacterController {
     // Update collider movement and get new position of rigid body
     this.characterController.computeColliderMovement(this.collider, movement);
 
+    if (this.isFalling) {
+      movement.y += velocity_y * delta;
+    }
+
     const newPosition = new THREE.Vector3()
       .copy(this.rigidBody.translation())
       .add(this.characterController.computedMovement());
 
     // Set next kinematic translation of rigid body and update character position
     this.rigidBody.setNextKinematicTranslation(newPosition);
-    this.character.position.lerp(this.rigidBody.translation(), 0.25);
+    this.character.position.lerp(this.rigidBody.translation(), 0.35); //smaller is like wlaking on ice
+    this.lastPosition = this.character.getWorldPosition(new THREE.Vector3());
   }
 
   loop() {
+    console.log("\nthis.jumpReleased", this.jumpReleased);
+    console.log("this.canJump", this.canJump);
+    console.log("this.jump", this.jump);
+    console.log("this.isFalling", this.isFalling);
     delta = clock.getDelta();
     this.detectGround();
     this.physics.world.step(this.eventQueue); // Step the world with the event queue
@@ -190,14 +202,18 @@ export default class CharacterController {
       movement.x += 1;
     }
 
-    if (this.jump && this.canJump && !this.isFalling && movement.y < 0.05) {
+    if (this.jump && this.canJump && !this.isFalling && this.jumpReleased) {
       velocity_y = this.calculateJumpVelocity(); // Calculate the initial jump velocity
       this.canJump = false;
+      this.jumpReleased = false;
+      appStateStore.setState({ isFalling: true });
     } else if (!this.jump && movement.y < 0.05) {
       this.canJump = true; // Reset jump capability when spacebar released
     }
 
-    velocity_y -= GRAVITY * delta * 2.5;
+    if (this.isFalling) {
+      velocity_y -= GRAVITY * delta * 2.5;  
+    }
     movement.y += velocity_y * delta;
 
     const horizontalMovement = new THREE.Vector3(movement.x, 0, movement.z)
@@ -215,9 +231,14 @@ export default class CharacterController {
     this.applyMovement(finalMovement);
 
     if (this.character.position.y < -70 && !alreadyDead) {
-      this.modalManager.openModal("Game Over", null, "/image/you-ded.webp", true, this.resetCharacter.bind(this)); 
+      this.modalManager.openModal(
+        "Game Over",
+        null,
+        "/image/you-ded.webp",
+        true,
+        this.resetCharacter.bind(this)
+      );
       alreadyDead = true;
     }
-
   }
 }
