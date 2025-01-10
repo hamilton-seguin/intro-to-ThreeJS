@@ -104,29 +104,27 @@ export default class CharacterController {
     if (groundUnderFootHit) {
       const hitPoint = ray.pointAt(groundUnderFootHit.toi);
       const distance = rayOrigin.y - hitPoint.y;
-
-      if (distance < 0.2) {
-        // * Grounded
-        appStateStore.setState({ isFalling: false });
-        this.canJump = true;
-        velocity_y = 0;
-        // this.character.position.y = hitPoint.y + avatarHalfHeight + 0.05;
-      } else {
-        // * Falling
-        appStateStore.setState({ isFalling: true });
-        this.canJump = false;
+    
+      // Check if grounded based on distance and velocity
+      const isGrounded = distance < 0.2 && velocity_y <= 0;
+      appStateStore.setState({ isFalling: !isGrounded });
+      this.canJump = isGrounded;
+    
+      if (isGrounded) {
+        velocity_y = 0; // Reset velocity only if grounded
       }
     } else {
-      // * Falling beyond limit
+      // No ground detected
       appStateStore.setState({ isFalling: true });
       this.canJump = false;
     }
+  
     return this.isFalling;
   }
 
   calculateJumpVelocity() {
-    const jumpHeight = 1.6; // Desired jump height in units
-    return Math.sqrt(3 * GRAVITY * jumpHeight); // Simplified jump velocity calculation
+    const jumpHeight = 1.2; // Desired jump height in units
+    return Math.sqrt(2 * GRAVITY * jumpHeight); // Simplified jump velocity calculation
   }
 
   resetCharacter() {
@@ -139,37 +137,51 @@ export default class CharacterController {
   }
 
   updateCharacterRotation(movement) {
-    const angle = Math.atan2(movement.x, movement.z) + Math.PI;
-    const characterRotation = new THREE.Quaternion().setFromAxisAngle(
-      new THREE.Vector3(0, 1, 0),
-      angle
-    );
-    this.character.quaternion.slerp(characterRotation, 0.1);
+    if (movement.x !== 0 || movement.z !== 0) {
+      const angle = Math.atan2(movement.x, movement.z) + Math.PI;
+  
+      // Only update the character's model rotation, not the global rotation
+      const characterRotation = new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        angle
+      );
+      this.character.quaternion.slerp(characterRotation, 0.1);
+    }
   }
 
   applyMovement(movement) {
     // Update collider movement and get new position of rigid body
     this.characterController.computeColliderMovement(this.collider, movement);
 
+    movement.y += velocity_y * delta * 2.5;
     if (this.isFalling) {
-      movement.y += velocity_y * delta;
     }
 
     const newPosition = new THREE.Vector3()
       .copy(this.rigidBody.translation())
       .add(this.characterController.computedMovement());
 
-    // Set next kinematic translation of rigid body and update character position
-    this.rigidBody.setNextKinematicTranslation(newPosition);
-    this.character.position.lerp(this.rigidBody.translation(), 0.35); //smaller is like wlaking on ice
+    // Update the kinematic rigid body to use the calculated position
+    this.physics.updateKinematicBody(this.rigidBody, newPosition);
+
+    // Smoothly update the character's position in the scene
+    this.character.position.lerp(newPosition, 0.35);
+
+    // Update rotation if there is horizontal movement
+    if (movement.x !== 0 || movement.z !== 0) {
+      const angle = Math.atan2(movement.x, movement.z) + Math.PI;
+      const characterRotation = new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        angle
+      );
+      this.character.quaternion.slerp(characterRotation, 0.1);
+    }
+
+    // Save the last known position for potential reset logic
     this.lastPosition = this.character.getWorldPosition(new THREE.Vector3());
   }
 
   loop() {
-    console.log("\nthis.jumpReleased", this.jumpReleased);
-    console.log("this.canJump", this.canJump);
-    console.log("this.jump", this.jump);
-    console.log("this.isFalling", this.isFalling);
     delta = clock.getDelta();
     this.detectGround();
     this.physics.world.step(this.eventQueue); // Step the world with the event queue
@@ -208,13 +220,15 @@ export default class CharacterController {
       this.jumpReleased = false;
       appStateStore.setState({ isFalling: true });
     } else if (!this.jump && movement.y < 0.05) {
+      this.jumpReleased = true;
       this.canJump = true; // Reset jump capability when spacebar released
     }
 
     if (this.isFalling) {
-      velocity_y -= GRAVITY * delta * 2.5;  
+      velocity_y -= GRAVITY * delta;  
     }
     movement.y += velocity_y * delta;
+    this.characterController.computeColliderMovement(this.collider, movement);
 
     const horizontalMovement = new THREE.Vector3(movement.x, 0, movement.z)
       .normalize()
