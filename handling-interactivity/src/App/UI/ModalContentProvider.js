@@ -2,29 +2,29 @@ export default class ModalContentProvider {
   constructor() {
     this.modalContents = {
       aboutMe: {
-        title: "About me",
+        title: 'About me',
         description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          "Senior Software Developer | 3+ Years Experience | Front-End Development <br/> Scalable & Modular Solutions | Driving Seamless User Experiences <br/> Leading Cross-Functional Teams <br/> <br/> Hi, I’m Hamilton – a passionate software developer specializing in front-end and full-stack development. With expertise in Next.js, TypeScript, Node.js, Tailwind CSS, and Three.js, I craft seamless, scalable solutions that bridge creativity and functionality.<br/> <br/>I thrive on tackling challenges that push me to grow, always eager to embrace opportunities to learn, innovate, and elevate my craft.<br/> <br/>Currently, I’m a Senior Frontend Developer at <a href='https://niloom.ai' target='_blank'>Niloom</a> , where I lead projects that deliver impactful user experiences.",
       },
       projects: {
-        title: "Projects",
+        title: 'Projects',
         description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       },
       contactMe: {
-        title: "Contact Me",
+        title: 'Contact Me',
         description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          "Let’s connect! <br/> <br/>Whether you have a project idea, collaboration in mind, or just want to say hi, feel free to reach out. <br/> <br/> • Find me on: <a href='https://www.linkedin.com/in/hamilton-seguin-6a5783270/?locale=en_US' target='_blank'>LinkedIn</a> <br/> • <a href='mailto:hamilton.seguin@gmail.com'>Email me</a>  <br/> <br/> You can also follow my work or reach out via these platforms:  <br/> <br/> • <a href='https://github.com/hamilton-seguin' target='_blank'>GitHub</a><br/> <br/>I look forward to hearing from you!",
       },
       tutorial: {
-        title: "Tutorial",
+        title: 'Tutorial',
         description:
-          "Z / ↑ : Forward <br/> A / ← : Left <br/> S / ↓ : Backward <br/> D / → : Right <br/> Space : Jump <br/> F : Special",
+          'Z / ↑ : Forward <br/> A / ← : Left <br/> S / ↓ : Backward <br/> D / → : Right <br/> Space : Jump <br/> F : Special',
       },
-    };
+    }
   }
 
   getModalInfo(portalName) {
-    return this.modalContents[portalName];
+    return this.modalContents[portalName]
   }
 }
