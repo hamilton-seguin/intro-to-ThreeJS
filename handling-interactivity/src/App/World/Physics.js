@@ -25,7 +25,7 @@ export default class Physics {
   /**
    * Adds a mesh to the physics simulation with a given rigid body type and collider type
    * @param {THREE.Mesh} mesh - The mesh to add to the physics simulation
-   * @param {string} type - The RAPIER rigid body type ("dynamic" or "fixed")
+   * @param {string} type - The RAPIER rigid body type ("dynamic", "fixed" or "kynematic")
    * @param {string} collider - The RAPIER collider type ("cuboid", "ball", or "trimesh")
    */
   add(mesh, type, collider) {
@@ -124,12 +124,23 @@ export default class Physics {
   }
 
   /**
+  Update the position and rotation of a kinematic body (character) separately from other physics bodies
+  */
+  updateKinematicBody(rigidBody, position, rotation) {
+    rigidBody.setNextKinematicTranslation(position);
+    if (rotation) rigidBody.setNextKinematicRotation(rotation);
+  }
+
+  /**
   The loop function that updates the physics simulation and the mesh positions and rotations
   */
   loop() {
     if (!this.rapierLoaded) return;
     this.world.step();
     this.meshMap.forEach((rigidBody, mesh) => {
+      // Skip kinematic bodies that are manually controlled
+      if (rigidBody.isKinematic()) return;
+
       // extracting the position and rotation from the rigid body
       const position = new THREE.Vector3().copy(rigidBody.translation());
       const rotation = new THREE.Quaternion().copy(rigidBody.rotation());
