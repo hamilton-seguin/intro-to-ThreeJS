@@ -15,6 +15,7 @@ export default class CharacterController {
   constructor() {
     // Initialize app, scene, physics, and character properties
     this.app = new App();
+    this.pane = this.app.gui.pane;
     this.scene = this.app.scene;
     this.physics = this.app.world.physics;
     this.character = this.app.world.character.instance;
@@ -37,6 +38,10 @@ export default class CharacterController {
 
     // Instantiate controller and create rigid body and collider
     this.instantiateController();
+
+    // Init ray helper
+    this.addGUI();
+    this.rayHelperEnabled = false;
 
     this.eventQueue = new this.physics.rapier.EventQueue(true);
   }
@@ -88,6 +93,11 @@ export default class CharacterController {
     const rayOrigin = new THREE.Vector3().copy(this.character.position);
     // ray origin is slightly above the foot of the avatar
     rayOrigin.y -= avatarHalfHeight - 0.1;
+
+    if (this.rayHelperEnabled){
+      const rayHelper = new THREE.ArrowHelper(rayDirection, rayOrigin, 10, 0xff0000);
+      this.scene.add(rayHelper);
+    }
 
     const ray = new this.physics.rapier.Ray(rayOrigin, rayDirection);
 
@@ -179,6 +189,20 @@ export default class CharacterController {
 
     // Save the last known position for potential reset logic
     this.lastPosition = this.character.getWorldPosition(new THREE.Vector3());
+  }
+
+  addGUI() {
+    const rayHelperFolder = this.pane.addFolder({ title: "RayHelper", expanded: false });
+    const enabled = { toggle: false };
+    rayHelperFolder.addBinding(enabled, 'toggle').on("change", () => {
+      this.rayHelperEnabled = !this.rayHelperEnabled;
+    });
+    rayHelperFolder.addButton({title: "reset"}).on("click", () => {
+      const arrowHelpers = this.scene.children.filter(element => element instanceof THREE.ArrowHelper);
+      arrowHelpers.forEach(arrowHelper => {
+        this.scene.remove(arrowHelper);
+      });
+    })
   }
 
   loop() {
