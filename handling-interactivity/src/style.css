@@ -97,7 +97,8 @@ button {
 
 .modal-wrapper {
   position: relative;
-  width: 50%;
+  width: 90%;
+  margin-top: 10px;
   top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -109,7 +110,7 @@ button {
   backdrop-filter: blur(25px);
   height: auto;
   min-height: 200px;
-  max-height: 50vh;
+  /* max-height: 50vh; */
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
@@ -201,7 +202,7 @@ a:hover {
   padding: 0;
 }
 .controllerGrid button:active {
-  color: #65ffd8;
+  color: rgb(172, 123, 246)
 }
 #T {
   grid-row-start: 1;
@@ -222,5 +223,9 @@ a:hover {
 @media (min-width: 769px) {
   .controller {
     display: none;
+  }
+  .modal-wrapper {
+    width: 50%;
+    margin-top: 0;
   }
 }
