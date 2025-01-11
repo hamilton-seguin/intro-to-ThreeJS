@@ -23,7 +23,7 @@ export default class ModalManager {
     document.getElementById('modalTitle').innerHTML = title
     this.description.innerHTML = description || ''
     this.img.src = imgPath || ''
-    
+
     if (typeDeath && restartCallback) {
       this.close.innerHTML = 'Restart'
       this.restartCallback = restartCallback // Store the callback

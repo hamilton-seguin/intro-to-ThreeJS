@@ -1,23 +1,22 @@
-import { createStore } from "zustand/vanilla";
+import { createStore } from 'zustand/vanilla'
 
 const assetsToLoad = [
   {
-    id: "hAvatar",
-    path: "/models/h-avatar.glb",
-    type: "model",
+    id: 'hAvatar',
+    path: '/models/h-avatar.glb',
+    type: 'model',
   },
   {
-    id: "mAvatar",
-    path: "/models/m-avatar.glb",
-    type: "model",
+    id: 'mAvatar',
+    path: '/models/m-avatar.glb',
+    type: 'model',
   },
   {
-    id: "environment",
-    path: "/models/environment.glb",
-    type: "model",
+    id: 'environment',
+    path: '/models/environment.glb',
+    type: 'model',
   },
-];
-
+]
 
 const assetStore = createStore((set) => ({
   assetsToLoad,
@@ -29,6 +28,6 @@ const assetStore = createStore((set) => ({
         [id]: asset,
       },
     })),
-}));
+}))
 
-export default assetStore;
+export default assetStore

@@ -3,8 +3,7 @@ export default class ModalContentProvider {
     this.modalContents = {
       aboutMe: {
         title: 'About me',
-        description:
-          `<span class='titles'>👨‍💻 Senior Software Developer | 3+ Years Experience | Front-End Development
+        description: `<span class='titles'>👨‍💻 Senior Software Developer | 3+ Years Experience | Front-End Development
           <br/>
           ⚙️ Scalable & Modular Solutions | 🚀 Driving Seamless User Experiences 
           <br/>
@@ -23,8 +22,7 @@ export default class ModalContentProvider {
       },
       contactMe: {
         title: 'Contact Me',
-        description:
-          `Let’s connect!
+        description: `Let’s connect!
           <br/><br/>
           Whether you have a project idea, collaboration in mind, or just want to say hi, feel free to reach out.
           <br/><br/>
