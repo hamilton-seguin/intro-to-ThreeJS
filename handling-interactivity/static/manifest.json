@@ -1,0 +1,46 @@
+{
+  "name": "Hamilton Seguin Portfolio",
+  "id": "/",
+  "start_url": "/",
+  "short_name": "Portfolio",
+  "description": "A showcase of my projects and skills in Three.js and web development.",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay"],
+  "background_color": "#000",
+  "theme_color": "#84B",
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "type": "image/png",
+      "sizes": "16x16"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot.webp",
+      "type": "image/webp",
+      "sizes": "3010x2116"
+    },
+    {
+      "src": "/screenshot.webp",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "sizes": "3010x2116"
+    }
+  ]
+}
