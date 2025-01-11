@@ -13,6 +13,10 @@ export default class ModalManager {
       }
       this.closeModal()
     }
+
+    // Add event listener for Escape key
+    this.handleKeyDown = this.handleKeyDown.bind(this) // Bind the method to the class
+    document.addEventListener('keydown', this.handleKeyDown)
   }
 
   openModal(title, description, imgPath, typeDeath, restartCallback) {
@@ -33,5 +37,21 @@ export default class ModalManager {
 
   closeModal() {
     this.modal.classList.remove('visible')
+  }
+
+  // Handle Escape Key
+  handleKeyDown(event) {
+    if (event.key === 'Escape' && this.modal.classList.contains('visible')) {
+      if (this.restartCallback) {
+        this.restartCallback()
+        this.restartCallback = null
+      }
+      this.closeModal()
+    }
+  }
+
+  // Clean up event listener when not needed
+  destroy() {
+    document.removeEventListener('keydown', this.handleKeyDown)
   }
 }
