@@ -167,9 +167,8 @@ a {
   text-underline-offset: 3px;
 }
 a:visited {
-  color: rgb(143, 71, 252);
-}
-
-a:hover {
   color: rgb(172, 123, 246);
+}
+a:hover {
+  color: rgb(143, 71, 252);
 }
