@@ -23,6 +23,7 @@ export default class ModalController {
     this.mesh = mesh;
     this.modalInfo = modalInfo;
 
+    // Tutorial modal on 1st tile
     this.tutorialTile = this.mesh.name === "tiles014" ? this : null;
     this.ModalNearMaterial = this.tutorialTile
       ? tutorialTileMeshNearMaterial

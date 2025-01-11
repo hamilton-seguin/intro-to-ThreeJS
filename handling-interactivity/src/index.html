@@ -13,7 +13,7 @@
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#84B"/>
+    <meta name="theme-color" content="#84B" />
   </head>
   <body>
     <canvas class="threejs"></canvas>
@@ -23,17 +23,17 @@
       Loading Experience... <span id="progressPercentage"></span>%
     </h1>
     <div class="start">
-      <button id="hAvatar">START as 👨‍🦱</button>
-      <button id="mAvatar">START as 👩</button>
+      <button type="button" id="hAvatar">START as 👨‍🦱</button>
+      <button type="button" id="mAvatar">START as 👩</button>
     </div>
     <div id="modal" class="modal">
       <div class="modal-wrapper">
         <div class="modal-content">
           <h1 id="modalTitle"></h1>
-          <img id="modalImg" src="" alt=""/>
+          <img id="modalImg" src="" alt="" />
           <p id="modalDescription"></p>
         </div>
-        <span class="close">Close</span>
+        <button type="button" class="close">Close</button>
       </div>
     </div>
   </body>
