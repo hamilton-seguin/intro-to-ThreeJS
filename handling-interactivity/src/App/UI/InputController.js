@@ -5,11 +5,46 @@ export default class InputController {
     this.startListening()
     this.inputStore = inputStore
     this.keyPressed = {}
+    this.setupButtonListeners()
   }
 
   startListening() {
     window.addEventListener('keydown', (event) => this.onKeyDown(event))
     window.addEventListener('keyup', (event) => this.onKeyUp(event))
+  }
+
+  // Add event listeners to the on-screen buttons
+  setupButtonListeners() {
+    const buttons = {
+      T: 'ArrowUp',
+      L: 'ArrowLeft',
+      B: 'ArrowDown',
+      R: 'ArrowRight',
+    }
+
+    Object.keys(buttons).forEach((buttonId) => {
+      const buttonElement = document.getElementById(buttonId)
+
+      if (buttonElement) {
+        buttonElement.addEventListener('touchstart', (e) => {
+          e.preventDefault()
+          this.onKeyDown({ code: buttons[buttonId] })
+        })
+
+        buttonElement.addEventListener('touchend', (e) => {
+          e.preventDefault()
+          this.onKeyUp({ code: buttons[buttonId] })
+        })
+
+        // Mouse events for desktop
+        buttonElement.addEventListener('mousedown', () =>
+          this.onKeyDown({ code: buttons[buttonId] })
+        )
+        buttonElement.addEventListener('mouseup', () =>
+          this.onKeyUp({ code: buttons[buttonId] })
+        )
+      }
+    })
   }
 
   onKeyDown(event) {

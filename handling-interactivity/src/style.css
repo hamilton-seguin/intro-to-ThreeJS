@@ -80,7 +80,7 @@ button {
 
 .modal {
   position: fixed;
-  z-index: 9999;
+  z-index: 2;
   left: 0;
   top: 0;
   width: 100%;
@@ -98,7 +98,7 @@ button {
 .modal-wrapper {
   position: relative;
   width: 50%;
-  top: 50%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
@@ -174,4 +174,53 @@ a:visited {
 }
 a:hover {
   color: rgb(143, 71, 252);
+}
+.controller {
+  position: absolute;
+  top: 85%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  z-index: 3;
+}
+
+.controllerGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 20px;
+  row-gap: 10px;
+}
+.controllerGrid button {
+  backdrop-filter: blur(25px);
+  background-color: rgba(108, 108, 108, 0.2);
+  border: white;
+  border-radius: 0.375rem;
+  padding: 0;
+}
+.controllerGrid button:active {
+  color: #65ffd8;
+}
+#T {
+  grid-row-start: 1;
+  grid-column-start: 2;
+}
+#L {
+  grid-row-start: 2;
+  grid-column-start: 1;
+}
+#B {
+  grid-row-start: 2;
+  grid-column-start: 2;
+}
+#R {
+  grid-row-start: 2;
+  grid-column-start: 3;
+}
+@media (min-width: 769px) {
+  .controller {
+    display: none;
+  }
 }
