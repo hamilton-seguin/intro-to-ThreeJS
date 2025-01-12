@@ -12,10 +12,17 @@ export default class AnimationController {
 
     inputStore.subscribe((input) => this.onInput(input))
     appStateStore.subscribe((state) => {
+      const wasFalling = this.isFalling
       this.isFalling = state.isFalling
+
+      if (wasFalling && !this.isFalling) {
+        this.onLand()
+      }
     })
 
     this.instantiateAnimations()
+    this.isJumping = false
+    this.lastInput = {}
   }
 
   instantiateAnimations() {
@@ -40,9 +47,35 @@ export default class AnimationController {
   }
 
   onInput(input) {
+    this.lastInput = input
+
+    // Prevent any animation changes while jumping
+    if (this.isJumping) return
+
+    // Handle jump input
     if (input.jump && !this.isFalling) {
-      this.playAnimation('Jumping')
-    } else if (input.forward || input.backward || input.left || input.right) {
+      this.onJump()
+      return
+    }
+
+    // Handle other inputs
+    this.updateAnimationBasedOnInput(input)
+  }
+
+  onJump() {
+    this.isJumping = true
+    this.playAnimation('Jumping')
+  }
+
+  onLand() {
+    if (this.isJumping) {
+      this.isJumping = false // Reset jump state
+      this.updateAnimationBasedOnInput(this.lastInput) // Play the appropriate animation
+    }
+  }
+
+  updateAnimationBasedOnInput(input = {}) {
+    if (input.forward || input.backward || input.left || input.right) {
       this.playAnimation('Running')
     } else if (input.extra) {
       this.animations.get('Dancing')
