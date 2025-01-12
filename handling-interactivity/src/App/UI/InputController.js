@@ -26,15 +26,17 @@ export default class InputController {
       const buttonElement = document.getElementById(buttonId)
 
       if (buttonElement) {
-        buttonElement.addEventListener('touchstart', (e) => {
-          e.preventDefault()
-          this.onKeyDown({ code: buttons[buttonId] })
-        })
+        buttonElement.addEventListener(
+          'touchstart',
+          () => this.onKeyDown({ code: buttons[buttonId] }),
+          { passive: true }
+        )
 
-        buttonElement.addEventListener('touchend', (e) => {
-          e.preventDefault()
-          this.onKeyUp({ code: buttons[buttonId] })
-        })
+        buttonElement.addEventListener(
+          'touchend',
+          () => this.onKeyUp({ code: buttons[buttonId] }),
+          { passive: true }
+        )
 
         // Mouse events for desktop
         buttonElement.addEventListener('mousedown', () =>
