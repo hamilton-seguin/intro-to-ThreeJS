@@ -2,9 +2,9 @@ import * as THREE from 'three'
 import App from '../App.js'
 
 import Stats from 'stats.js'
+
 let stats = new Stats()
 stats.showPanel(0)
-document.body.appendChild(stats.dom)
 
 export default class Loop {
   constructor() {
@@ -31,6 +31,14 @@ export default class Loop {
       this.toggleStats()
     })
   }
+
+  toggleStats() {
+    if (this.isStatsActive) {
+      document.body.removeChild(stats.dom) // Remove stats from DOM
+    } else {
+      document.body.appendChild(stats.dom) // Add stats to DOM
+    }
+    this.isStatsActive = !this.isStatsActive // Toggle the flag
   }
 
   loop() {
