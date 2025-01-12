@@ -13,6 +13,7 @@ export default class Preloader {
     this.startButton = document.querySelector('.start')
     this.hAvatar = document.getElementById('hAvatar')
     this.mAvatar = document.getElementById('mAvatar')
+    this.controller = document.getElementById('controller')
 
     this.assetStore.subscribe((state) => {
       this.numberOfLoadedAssets = Object.keys(state.loadedAssets).length
@@ -54,6 +55,7 @@ export default class Preloader {
   removeOverlay() {
     this.overlay.classList.add('fade')
     this.startButton.classList.add('fadeOut')
+    this.controller.classList.add('fadeIn')
 
     window.setTimeout(() => {
       this.overlay.remove()
