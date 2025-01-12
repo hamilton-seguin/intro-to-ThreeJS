@@ -18,6 +18,7 @@ export default class Camera {
     this.setInstance()
     this.setControls()
     this.setResizeLister()
+    this.addGUI()
   }
 
   setInstance() {
@@ -29,8 +30,9 @@ export default class Camera {
     )
     this.instance.position.set(0, 25, 40)
     this.instance.lookAt(0, 15, 0)
+  }
 
-    // pane controls
+  addGUI() {
     const cameraFolder = this.pane.addFolder({
       title: 'Camera',
       expanded: false,

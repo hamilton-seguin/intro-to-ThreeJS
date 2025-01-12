@@ -17,8 +17,8 @@ export default class Environment {
 
     this.loadEnvironment()
     this.addLights()
-    this.addGUI()
     this.addPortals()
+    this.addGUI()
   }
 
   loadEnvironment() {

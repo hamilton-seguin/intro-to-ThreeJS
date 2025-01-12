@@ -9,13 +9,28 @@ document.body.appendChild(stats.dom)
 export default class Loop {
   constructor() {
     this.app = new App()
+    this.pane = this.app.gui.pane
     this.camera = this.app.camera
     this.renderer = this.app.renderer
     this.world = this.app.world
 
     this.clock = new THREE.Clock()
     this.previousElapsedTime = 0
+    this.isStatsActive = false
     this.loop()
+    this.addGUI()
+  }
+
+  addGUI() {
+    const loopFolder = this.pane.addFolder({
+      title: 'Stats',
+      expanded: false,
+    })
+    const btn = loopFolder.addButton({ title: 'Toggle Stats' })
+    btn.on('click', () => {
+      this.toggleStats()
+    })
+  }
   }
 
   loop() {

@@ -2,6 +2,7 @@ import { Pane } from 'tweakpane'
 
 export default class GUI {
   constructor() {
-    this.pane = new Pane()
+    const pane = new Pane()
+    this.pane = pane.addFolder({ title: 'GUI', expanded: false })
   }
 }

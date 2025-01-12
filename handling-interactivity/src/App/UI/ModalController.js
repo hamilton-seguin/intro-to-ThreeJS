@@ -39,6 +39,10 @@ export default class ModalController {
     this.mesh.material = this.ModalFarMaterial
     this.prevIsNear = false
 
+    this.addGUI()
+  }
+
+  addGUI() {
     const modalPortal = this.pane.addFolder({
       title: `${this.mesh.name}`,
       expanded: false,
